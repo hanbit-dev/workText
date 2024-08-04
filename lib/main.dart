@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // runApp() 호출 전 Flutter SDK 초기화
+  KakaoSdk.init(
+    javaScriptAppKey: 'f2f424a49d8de1e55032caa0248db0f6',
+  );
+
+  runApp(const LoginApp());
 }
 
 class MyApp extends StatelessWidget {
