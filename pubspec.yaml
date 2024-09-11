@@ -35,12 +35,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+  kakao_flutter_sdk_common: ^1.9.5  # 최신 버전 번호를 사용하세요
   kakao_flutter_sdk: ^1.9.5 # 전체 추가
   kakao_flutter_sdk_user: ^1.9.5 # 카카오 로그인 API 패키지
   kakao_flutter_sdk_share: ^1.9.5 # 카카오톡 공유 API 패키지
   kakao_flutter_sdk_talk: ^1.9.5 # 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 패키지
   kakao_flutter_sdk_friend: ^1.9.5 # 피커 API 패키지
   kakao_flutter_sdk_navi: ^1.9.5 # 카카오내비 API 패키지
+  flutter_secure_storage: ^8.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,8 +66,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/kakao_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -79,6 +81,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Pretendard Variable
+      fonts:
+        - asset: assets/fonts/PretendardVariable.woff2
+          weight: 400
   # fonts:
   #   - family: Schyler
   #     fonts:
