@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         fontFamily: 'Pretendard Variable',
+        scaffoldBackgroundColor: Color.fromRGBO(48, 48, 48, 1.0)
       ),
       initialRoute: '/',
       routes: appRoutes,
