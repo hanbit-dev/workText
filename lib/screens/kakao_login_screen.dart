@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:provider/provider.dart';
+import 'package:worktext/routes/app_router.dart';
+import 'package:worktext/routes/app_routes.dart';
 import 'package:worktext/services/auth_service.dart';
 import 'package:worktext/services/user_service.dart';
 
@@ -12,18 +15,15 @@ class KakaoLoginScreen extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+  void _doLogin(BuildContext context) async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final userService = Provider.of<UserService>(context, listen: false);
+    final appStateManager =
+        Provider.of<AppStateManager>(context, listen: false);
 
-class _LoginPageState extends State<LoginPage> {
-  final AuthService authService = AuthService();
-  final UserService userService = UserService();
-
-  void _doLogin() async {
     try {
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
       print('카카오계정으로 로그인 성공');
@@ -44,14 +44,15 @@ class _LoginPageState extends State<LoginPage> {
           'email': user.kakaoAccount?.email,
         });
 
+        appStateManager.login();
+
         // 추가 사용자 정보 확인
         bool hasAdditionalInfo = await userService.hasAdditionalUserInfo();
         if (!hasAdditionalInfo) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/user-info', (Route<dynamic> route) => false);
+          appStateManager.setCurrentRoute(AppRoute.userInfo);
         } else {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/home', (Route<dynamic> route) => false);
+          appStateManager.setUserInfo();
+          appStateManager.setCurrentRoute(AppRoute.home);
         }
       } catch (error) {
         print('사용자 정보 요청 실패 $error');
@@ -77,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 24,
             width: 24,
           ),
-          onPressed: _doLogin,
+          onPressed: () => _doLogin(context),
           label: const Text('카카오톡으로 로그인',
               style: TextStyle(fontWeight: FontWeight.w600)),
           backgroundColor: const Color(0xFFFEE500),

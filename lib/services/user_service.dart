@@ -19,10 +19,16 @@ class UserService {
     return null;
   }
 
-  // 사용자 이름 가져오기
-  Future<String?> getUsername() async {
+  // 사용자 닉네임 가져오기
+  Future<String?> getUserNickname() async {
     Map<String, dynamic>? userInfo = await getUserInfo();
     return userInfo?['nickname'];
+  }
+
+  // 사용자 이름 가져오기
+  Future<String?> getUserName() async {
+    Map<String, dynamic>? userInfo = await getUserInfo();
+    return userInfo?['name'];
   }
 
   // 사용자 정보 삭제

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:worktext/routes/app_router.dart';
+import 'package:worktext/routes/app_routes.dart';
 import 'package:worktext/services/user_service.dart';
 
 class UserInfoScreen extends StatelessWidget {
@@ -20,7 +23,6 @@ class AdditionalUserInfoPage extends StatefulWidget {
 }
 
 class _AdditionalUserInfoPageState extends State<AdditionalUserInfoPage> {
-  final UserService _userService = UserService();
   final _formKey = GlobalKey<FormState>();
 
   String _name = '';
@@ -39,7 +41,8 @@ class _AdditionalUserInfoPageState extends State<AdditionalUserInfoPage> {
   }
 
   void _loadUserInfo() async {
-    final userInfo = await _userService.getUserInfo();
+    final userService = Provider.of<UserService>(context, listen: false);
+    final userInfo = await userService.getUserInfo();
     if (userInfo != null) {
       setState(() {
         _name = userInfo['name'] ?? '';
@@ -54,16 +57,18 @@ class _AdditionalUserInfoPageState extends State<AdditionalUserInfoPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      await _userService.saveAdditionalUserInfo(
+      final userService = Provider.of<UserService>(context, listen: false);
+      final appStateManager =
+          Provider.of<AppStateManager>(context, listen: false);
+
+      await userService.saveAdditionalUserInfo(
         name: _name,
         gender: _gender,
         ageGroup: _ageGroup,
       );
 
-      if (mounted) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-      }
+      appStateManager.setUserInfo();
+      appStateManager.setCurrentRoute(AppRoute.home);
     }
   }
 
