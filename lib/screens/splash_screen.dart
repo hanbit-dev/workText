@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:worktext/services/auth_service.dart';
-import 'package:worktext/services/user_service.dart';
+import 'package:provider/provider.dart';
+
+import '../routes/app_router.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,9 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final AuthService authService = AuthService();
-  final UserService userService = UserService();
-
   @override
   void initState() {
     super.initState();
@@ -20,22 +20,34 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkAuth() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final userService = Provider.of<UserService>(context, listen: false);
+    final appStateManager =
+        Provider.of<AppStateManager>(context, listen: false);
+
     final hasToken = await authService.hasToken();
 
     if (hasToken) {
-      // 토큰이 있는 경우, 추가 사용자 정보 확인
+      appStateManager.login();
+      print('After login - Current route: ${appStateManager.currentRoute}');
+
       bool hasAdditionalInfo = await userService.hasAdditionalUserInfo();
-      if (!hasAdditionalInfo) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            '/user-info', (Route<dynamic> route) => false);
-      } else {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+      if (hasAdditionalInfo) {
+        appStateManager.setUserInfo();
+        print(
+            'After setUserInfo - Current route: ${appStateManager.currentRoute}');
       }
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          '/kakao-login', (Route<dynamic> route) => false);
+      appStateManager.logout();
+      print('No token - Current route: ${appStateManager.currentRoute}');
     }
+
+    // initializeApp을 마지막에 호출
+    appStateManager.initializeApp();
+
+    print('Final state - Current route: ${appStateManager.currentRoute}');
+    print('Is logged in: ${appStateManager.isLoggedIn}');
+    print('Has user info: ${appStateManager.hasUserInfo}');
   }
 
   @override
