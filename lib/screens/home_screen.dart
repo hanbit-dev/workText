@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
