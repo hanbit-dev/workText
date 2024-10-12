@@ -127,13 +127,13 @@ class AppRouter extends RouterDelegate<RouteSettings>
     return Navigator(
       key: navigatorKey,
       pages: [
-        // if (!appStateManager.isInitialized)
-        //   MaterialPage(child: AppRoute.splash.screen),
-        // if (appStateManager.isInitialized && !appStateManager.isLoggedIn)
-        //   MaterialPage(child: AppRoute.kakaoLogin.screen),
-        // if (appStateManager.isLoggedIn && !appStateManager.hasUserInfo)
-        //   MaterialPage(child: AppRoute.userInfo.screen),
-        // if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
+        if (!appStateManager.isInitialized)
+          MaterialPage(child: AppRoute.splash.screen),
+        if (appStateManager.isInitialized && !appStateManager.isLoggedIn)
+          MaterialPage(child: AppRoute.kakaoLogin.screen),
+        if (appStateManager.isLoggedIn && !appStateManager.hasUserInfo)
+          MaterialPage(child: AppRoute.userInfo.screen),
+        if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
         if (appStateManager.isOpenSecondSideBar)
           MaterialPage(
             child: SidebarLayout(
