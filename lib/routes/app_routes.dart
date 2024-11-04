@@ -164,7 +164,7 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.messages:
         return '문자';
       case AppRoute.sendMessage:
-        return '문자 보내기';
+        return '문자 생성';
       case AppRoute.messageHistory:
         return '문자 내역';
       case AppRoute.settings:
