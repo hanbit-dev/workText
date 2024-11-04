@@ -7,7 +7,6 @@ import '../screens/groups_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/kakao_login_screen.dart';
 import '../screens/message_history_screen.dart';
-import '../screens/messages_screen.dart';
 import '../screens/send_message_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/user_info_screen.dart';
@@ -48,7 +47,7 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.groups:
         return '/groups';
       case AppRoute.messages:
-        return '/messages';
+        return '/send-message';
       case AppRoute.sendMessage:
         return '/send-message';
       case AppRoute.messageHistory:
@@ -83,7 +82,7 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.groups:
         return const GroupsScreen();
       case AppRoute.messages:
-        return const MessagesScreen();
+        return const SendMessageScreen();
       case AppRoute.sendMessage:
         return const SendMessageScreen();
       case AppRoute.messageHistory:
@@ -162,11 +161,11 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.groups:
         return '그룹관리';
       case AppRoute.messages:
-        return '문자';
+        return '메세지';
       case AppRoute.sendMessage:
-        return '문자 생성';
+        return '메세지 생성';
       case AppRoute.messageHistory:
-        return '문자 내역';
+        return '메세지 내역';
       case AppRoute.settings:
         return '설정';
       case AppRoute.withdrawal:
