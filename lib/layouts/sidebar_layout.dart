@@ -40,6 +40,7 @@ class SidebarLayout extends StatelessWidget {
             SizedBox(
               width: 90,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: NavigationDrawer(
@@ -76,14 +77,12 @@ class SidebarLayout extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Flexible(
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                      alignment: Alignment.bottomCenter, // 하단 중앙 정렬
-                      child: ElevatedButton(
-                        onPressed: appStateManager.isOpenSecondSideBar ? appStateManager.closeSecondSideBar : appStateManager.openSecondSideBar,
-                        child: appStateManager.isOpenSecondSideBar ? const Icon(Icons.keyboard_double_arrow_left) : const Icon(Icons.keyboard_double_arrow_right),
-                      ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                    alignment: Alignment.topCenter, // 상단 중앙 정렬
+                    child: ElevatedButton(
+                      onPressed: appStateManager.isOpenSecondSideBar ? appStateManager.closeSecondSideBar : appStateManager.openSecondSideBar,
+                      child: appStateManager.isOpenSecondSideBar ? const Icon(Icons.keyboard_double_arrow_left) : const Icon(Icons.keyboard_double_arrow_right),
                     ),
                   ),
                 ],
