@@ -16,8 +16,10 @@ class SidebarLayout extends StatelessWidget {
 
     final sidebarRoutes = [
       AppRoute.home,
-      AppRoute.messages,
+      AppRoute.sendMessage,
+      AppRoute.messageHistory,
       AppRoute.contacts,
+      AppRoute.groups,
       AppRoute.settings,
       AppRoute.notice,
       AppRoute.logout,
@@ -33,38 +35,39 @@ class SidebarLayout extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 90,
+              width: 200,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: NavigationDrawer(
-                      backgroundColor: const Color.fromRGBO(48, 48, 48, 1.0),
+                      // backgroundColor: Color.fromRGBO(48, 48, 48, 1.0),
+                      backgroundColor: Colors.white54,
                       selectedIndex: sidebarRoutes.indexOf(currentFirstSideBar),
                       onDestinationSelected: (index) {
                         final selectedRoute = sidebarRoutes[index];
                         if (selectedRoute == AppRoute.logout) {
                           _showLogoutDialog(context);
                         } else {
-                          appStateManager.openSecondSideBar();
+                          // appStateManager.openSecondSideBar();
                           appStateManager.setCurrentRoute(selectedRoute);
                           appStateManager.setCurrentFirstSideBar(selectedRoute);
-                          appStateManager.setSecondSideBar(selectedRoute);
+                          // appStateManager.setSecondSideBar(selectedRoute);
                         }
                       },
                       children: [
                         const Padding(
                           padding: EdgeInsets.fromLTRB(40, 16, 16, 10),
                         ),
-                        ...sidebarRoutes.map((route) =>
-                            NavigationDrawerDestination(
-                              icon: Icon(
-                                route.icon,
-                                color: const Color.fromRGBO(210, 210, 210, 1.0),
-                              ),
-                              selectedIcon: Icon(route.selectedIcon),
-                              label: const SizedBox.shrink(),
-                            )),
+                        ...sidebarRoutes
+                            .map((route) => NavigationDrawerDestination(
+                                  icon: Icon(
+                                    route.icon,
+                                    // color: Color.fromRGBO(210, 210, 210, 1.0),
+                                  ),
+                                  selectedIcon: Icon(route.selectedIcon),
+                                  label: Text(route.label),
+                                )),
                         // if (sidebarRoutes.last != AppRoute.logout)
                         //   const Padding(
                         //     padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
@@ -73,18 +76,14 @@ class SidebarLayout extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                    alignment: Alignment.topCenter, // 상단 중앙 정렬
-                    child: ElevatedButton(
-                      onPressed: appStateManager.isOpenSecondSideBar
-                          ? appStateManager.closeSecondSideBar
-                          : appStateManager.openSecondSideBar,
-                      child: appStateManager.isOpenSecondSideBar
-                          ? const Icon(Icons.keyboard_double_arrow_left)
-                          : const Icon(Icons.keyboard_double_arrow_right),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  //   alignment: Alignment.topCenter, // 상단 중앙 정렬
+                  //   child: ElevatedButton(
+                  //     onPressed: appStateManager.isOpenSecondSideBar ? appStateManager.closeSecondSideBar : appStateManager.openSecondSideBar,
+                  //     child: appStateManager.isOpenSecondSideBar ? const Icon(Icons.keyboard_double_arrow_left) : const Icon(Icons.keyboard_double_arrow_right),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

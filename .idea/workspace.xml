@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2128a55-6722-4ad0-ac38-8cd202abb358" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/layouts/second_sidebar_layout.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/screens/notice_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/screens/settings_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/components/msg_input_bar.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/layouts/sidebar_layout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/layouts/sidebar_layout.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/routes/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/routes/app_router.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/routes/app_routes.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/send_message_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/send_message_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "S7-4",
+    "git-widget-placeholder": "Rebasing S7-11-UI-개발",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
     "settings.editor.selected.configurable": "AndroidSdkUpdater",

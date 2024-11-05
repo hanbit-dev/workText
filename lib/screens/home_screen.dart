@@ -15,7 +15,8 @@ class HomeScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(238, 238, 238, 1.0),
+        // backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
+        backgroundColor: Colors.indigo.withOpacity(0.1),
         body: Center(
           child: Consumer<UserService>(
             builder: (context, userService, child) {

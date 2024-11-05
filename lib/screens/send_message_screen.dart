@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worktext/components/msg_input_bar.dart';
 
 class SendMessageScreen extends StatefulWidget {
   const SendMessageScreen({super.key});
@@ -33,7 +34,8 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
+      // backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
+      backgroundColor: Colors.indigo.withOpacity(0.1),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 0), // 전체 패딩 추가
@@ -42,41 +44,25 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
             children: [
               const Text(
                 '메세지 생성하기',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20), // 텍스트와 TextField 사이 간격
-              TextField(
-                controller: _controller,
-                maxLines: 10, // 줄 수 제한
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: '내용을 입력해주세요',
-                  alignLabelWithHint: true,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                decoration: BoxDecoration(
+                    color: Colors.indigoAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(15.0)
+                ),
+                child: const Row(
+                  children: [
+                    Text('받는 사람'),
+                    Spacer(),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20), // TextField와 버튼 사이 간격
-              Row(
-                children: [
-                  const Text('존댓말'),
-                  Checkbox(
-                    value: _isChecked,
-                    onChanged: _toggleCheckbox, // 상태 변경 함수
-                    activeColor: Colors.grey, // 선택 시 체크박스 배경 색상
-                    checkColor: Colors.white, // 선택 시 체크 표시 색상
-                  ),
-                  const Spacer(), // 버튼을 오른쪽으로 밀어내기 위한 Spacer
-                  ElevatedButton(
-                    onPressed: _saveText,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white54,
-                      foregroundColor: Colors.black,
-                    ),
-                    child: const Text('입력'),
-                  ),
-                ],
-              ),
               const SizedBox(height: 20),
-              Text(_textValue), //테스트용 텍스트 출력 컴포넌트
+              MsgInputBar(), // 하단에 ChatInputBar 추가
+              const SizedBox(height: 20), // TextField와 버튼 사이 간격
             ],
           ),
         ),

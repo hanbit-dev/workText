@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         fontFamily: 'Pretendard Variable',
-        scaffoldBackgroundColor: const Color.fromRGBO(48, 48, 48, 1.0),
+        // scaffoldBackgroundColor: const Color.fromRGBO(48, 48, 48, 1.0),
       ),
       routerDelegate: AppRouter(
         appStateManager: context.read<AppStateManager>(),

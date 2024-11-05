@@ -97,28 +97,14 @@ class AppRouter extends RouterDelegate<RouteSettings>
           MaterialPage(child: AppRoute.splash.screen),
         if (appStateManager.isInitialized && !userService.isLoggedIn)
           MaterialPage(child: AppRoute.kakaoLogin.screen),
-        if (appStateManager.isInitialized && userService.isLoggedIn)
-          if (appStateManager.isOpenSecondSideBar)
-            MaterialPage(
-              child: SidebarLayout(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                  child: SecondSidebarLayout(
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      child: appStateManager.currentRoute.screen,
-                    ),
-                  ),
-                ),
-              ),
-            )
-          else
-            MaterialPage(
-              child: SidebarLayout(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-                  child: appStateManager.currentRoute.screen,
-                ),
+        if (appStateManager.isLoggedIn && !appStateManager.hasUserInfo)
+          MaterialPage(child: AppRoute.userInfo.screen),
+        if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
+          MaterialPage(
+            child: SidebarLayout(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: appStateManager.currentRoute.screen,
               ),
             ),
       ],
