@@ -100,21 +100,46 @@ class SidebarLayout extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('로그아웃'),
-          content: const Text('정말로 로그아웃하시겠습니까?'),
-          actions: <Widget>[
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.orange, size: 30),
+              SizedBox(width: 10),
+              Text("로그아웃", style: TextStyle(color: Colors.black, fontSize: 20)),
+            ],
+          ),
+          content: Text(
+            "정말로 로그아웃 하시겠습니까?",
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
             TextButton(
-              child: const Text('취소'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.indigoAccent,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: Text("취소"),
             ),
-            TextButton(
-              child: const Text('확인'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigoAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 _logout(context);
               },
+              child: Text(
+                "확인",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -126,4 +151,31 @@ class SidebarLayout extends StatelessWidget {
     final userService = Provider.of<UserService>(context, listen: false);
     await userService.logout();
   }
+
+  // void _showLogoutDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('로그아웃'),
+  //         content: const Text('정말로 로그아웃하시겠습니까?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('취소'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: const Text('확인'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               _logout(context);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

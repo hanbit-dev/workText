@@ -33,39 +33,34 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
-      backgroundColor: Colors.indigo.withOpacity(0.1),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0), // 전체 패딩 추가
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-            children: [
-              const Text(
-                '메세지 생성하기',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20), // 텍스트와 TextField 사이 간격
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-                decoration: BoxDecoration(
-                    color: Colors.indigoAccent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(15.0)
-                ),
-                child: const Row(
-                  children: [
-                    Text('받는 사람'),
-                    Spacer(),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              MsgInputBar(), // 하단에 ChatInputBar 추가
-              const SizedBox(height: 20), // TextField와 버튼 사이 간격
-            ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0), // 전체 패딩 추가
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start, //위쪽 정렬
+        crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+        children: [
+          const Text(
+            '메세지 생성하기',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-        ),
+          const SizedBox(height: 20), // 텍스트와 TextField 사이 간격
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            decoration: BoxDecoration(
+                color: Colors.indigoAccent.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(15.0)
+            ),
+            child: const Row(
+              children: [
+                Text('받는 사람'),
+                Spacer(),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          MsgInputBar(), // 하단에 ChatInputBar 추가
+          const SizedBox(height: 20), // TextField와 버튼 사이 간격
+        ],
       ),
     );
   }

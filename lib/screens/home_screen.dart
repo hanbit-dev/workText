@@ -14,32 +14,47 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        // backgroundColor: Color.fromRGBO(238, 238, 238, 1.0),
-        backgroundColor: Colors.indigo.withOpacity(0.1),
-        body: Center(
-          child: Consumer<UserService>(
-            builder: (context, userService, child) {
-              final nickname = userService.user?['user_nm'] ?? '사용자';
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '환영합니다, $nickname님!',
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _logout(context),
-                    child: const Text('로그아웃'),
-                  ),
-                ],
-              );
-            },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.account_circle,
+            size: 200,
+            color: Colors.indigoAccent.withOpacity(0.3),
           ),
-        ),
+          const SizedBox(height: 20),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(
+              '환영합니다, ',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '$_username',
+              style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigoAccent),
+            ),
+            Text(
+              '님!',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ]),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _goToUserInfoScreen,
+            child: const Text('내 정보 수정'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _deleteUserInfo,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('내 정보 삭제'),
+          ),
+        ],
       ),
     );
   }

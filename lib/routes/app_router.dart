@@ -102,11 +102,19 @@ class AppRouter extends RouterDelegate<RouteSettings>
         if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
           MaterialPage(
             child: SidebarLayout(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: appStateManager.currentRoute.screen,
+              child: Scaffold(
+                backgroundColor: Colors.indigo.withOpacity(0.1),
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      child: appStateManager.currentRoute.screen,
+                    ),
+                  ),
+                ),
               ),
             ),
+          ),
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
