@@ -33,6 +33,12 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+    window.addEventListener('load', async function(ev) {
+      window.firebase_app = await import("https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js");
+      window.firebase_auth = await import("https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js");
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

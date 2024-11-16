@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/routes/app_routes.dart';
+import 'package:worktext/services/user_service.dart';
 
 import '../routes/app_router.dart';
-import '../services/auth_service.dart';
 
 class SidebarLayout extends StatelessWidget {
   final Widget child;
@@ -23,13 +23,8 @@ class SidebarLayout extends StatelessWidget {
       AppRoute.logout,
     ];
 
-    final currentRoute = sidebarRoutes.firstWhere(
-      (route) => route.path == appStateManager.currentRoute.path,
-      orElse: () => AppRoute.home,
-    );
-
     final currentFirstSideBar = sidebarRoutes.firstWhere(
-          (route) => route.path == appStateManager.currentFirstSideBar.path,
+      (route) => route.path == appStateManager.currentFirstSideBar.path,
       orElse: () => AppRoute.home,
     );
 
@@ -44,7 +39,7 @@ class SidebarLayout extends StatelessWidget {
                 children: [
                   Expanded(
                     child: NavigationDrawer(
-                      backgroundColor: Color.fromRGBO(48, 48, 48, 1.0),
+                      backgroundColor: const Color.fromRGBO(48, 48, 48, 1.0),
                       selectedIndex: sidebarRoutes.indexOf(currentFirstSideBar),
                       onDestinationSelected: (index) {
                         final selectedRoute = sidebarRoutes[index];
@@ -61,14 +56,15 @@ class SidebarLayout extends StatelessWidget {
                         const Padding(
                           padding: EdgeInsets.fromLTRB(40, 16, 16, 10),
                         ),
-                        ...sidebarRoutes.map((route) => NavigationDrawerDestination(
+                        ...sidebarRoutes.map((route) =>
+                            NavigationDrawerDestination(
                               icon: Icon(
                                 route.icon,
-                                color: Color.fromRGBO(210, 210, 210, 1.0),
+                                color: const Color.fromRGBO(210, 210, 210, 1.0),
                               ),
                               selectedIcon: Icon(route.selectedIcon),
-                              label: SizedBox.shrink(),
-                        )),
+                              label: const SizedBox.shrink(),
+                            )),
                         // if (sidebarRoutes.last != AppRoute.logout)
                         //   const Padding(
                         //     padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
@@ -78,11 +74,15 @@ class SidebarLayout extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                     alignment: Alignment.topCenter, // 상단 중앙 정렬
                     child: ElevatedButton(
-                      onPressed: appStateManager.isOpenSecondSideBar ? appStateManager.closeSecondSideBar : appStateManager.openSecondSideBar,
-                      child: appStateManager.isOpenSecondSideBar ? const Icon(Icons.keyboard_double_arrow_left) : const Icon(Icons.keyboard_double_arrow_right),
+                      onPressed: appStateManager.isOpenSecondSideBar
+                          ? appStateManager.closeSecondSideBar
+                          : appStateManager.openSecondSideBar,
+                      child: appStateManager.isOpenSecondSideBar
+                          ? const Icon(Icons.keyboard_double_arrow_left)
+                          : const Icon(Icons.keyboard_double_arrow_right),
                     ),
                   ),
                 ],
@@ -124,11 +124,7 @@ class SidebarLayout extends StatelessWidget {
   }
 
   void _logout(BuildContext context) async {
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final appStateManager =
-        Provider.of<AppStateManager>(context, listen: false);
-
-    await authService.logout();
-    appStateManager.logout();
+    final userService = Provider.of<UserService>(context, listen: false);
+    await userService.logout();
   }
 }
