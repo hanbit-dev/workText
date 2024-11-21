@@ -46,7 +46,7 @@ class _MsgInputBarState extends State<MsgInputBar> {
                 ElevatedButton(
                   onPressed: _toggleLanguageMode,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigoAccent,
+                    backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                     foregroundColor: Colors.white,
                   ),
                   child: Text(_isFormal ? '존댓말 사용' : '반말 사용'),
@@ -58,7 +58,7 @@ class _MsgInputBarState extends State<MsgInputBar> {
                 // ),
                 Spacer(), // 아이콘들을 왼쪽 정렬하고 전송 버튼을 오른쪽에 배치
                 CircleAvatar(
-                  backgroundColor: Colors.indigoAccent,
+                  backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   radius: 18,
                   child: IconButton(
                     icon: Icon(Icons.arrow_upward, color: Colors.white),

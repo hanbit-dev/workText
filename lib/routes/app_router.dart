@@ -100,16 +100,15 @@ class AppRouter extends RouterDelegate<RouteSettings>
         if (appStateManager.isLoggedIn && !appStateManager.hasUserInfo)
           MaterialPage(child: AppRoute.userInfo.screen),
         if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
-          MaterialPage(
-            child: SidebarLayout(
-              child: Scaffold(
-                backgroundColor: Colors.indigo.withOpacity(0.1),
-                body: SafeArea(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      margin: EdgeInsets.all(10),
-                      child: appStateManager.currentRoute.screen,
-                    ),
+        MaterialPage(
+          child: SidebarLayout(
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: appStateManager.currentRoute.screen,
                   ),
                 ),
               ),

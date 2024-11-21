@@ -42,7 +42,7 @@ class SidebarLayout extends StatelessWidget {
                   Expanded(
                     child: NavigationDrawer(
                       // backgroundColor: Color.fromRGBO(48, 48, 48, 1.0),
-                      backgroundColor: Colors.white54,
+                      backgroundColor: Colors.white24,
                       selectedIndex: sidebarRoutes.indexOf(currentFirstSideBar),
                       onDestinationSelected: (index) {
                         final selectedRoute = sidebarRoutes[index];
