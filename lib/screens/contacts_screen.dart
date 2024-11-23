@@ -25,6 +25,15 @@ class _ContactsScreenState extends State<ContactsScreen> {
     {"name": "아무개", "tags": ["회사"]},
   ];
 
+  List<Map<String, dynamic>> groups = [
+    {"name": "교회", "color": "0xFFFFC1C1"},
+    {"name": "1청", "color": "0xFFCCE0FF"},
+    {"name": "회사", "color": "0xFFBDBDBD"},
+    {"name": "2청", "color": "0xFFFFC1C1"},
+    {"name": "게임", "color": "0xFFBDBDBD"},
+    {"name": "커뮤니티", "color": "0xFFFFC1C1"},
+  ];
+
   void _addContact(Map<String, dynamic> contact) {
     setState(() {
       contacts.add(contact);
@@ -35,6 +44,81 @@ class _ContactsScreenState extends State<ContactsScreen> {
     setState(() {
       contacts.removeAt(index);
     });
+  }
+
+  // 그룹에 + 버튼 클릭 시 아래에 새로운 화면 띄우기
+  void _showGroupDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // BottomSheet 크기 조정 가능
+      builder: (context) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 0.4,
+          height: MediaQuery.of(context).size.height * 0.7,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "검색어를 입력해 주세요",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded( //그룹 리스트 영역
+                  child: ListView.builder(
+                    itemCount: groups.length,
+                    itemBuilder: (context, index) {
+                      final group = groups[index];
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: true,
+                            onChanged: (value) {},
+                            checkColor: Colors.white,
+                            activeColor: Colors.indigoAccent.withOpacity(0.8),
+                          ),
+                          Chip(
+                              label: Text(group["name"]),
+                              backgroundColor: Color(int.parse(group["color"]))
+                          )
+                        ],
+                      );
+                    },
+                  ),
+              ),
+              Row( //버튼 영역
+                children: [
+                  Checkbox(
+                    value: true,
+                    onChanged: (value) {},
+                    checkColor: Colors.white,
+                    activeColor: Colors.indigoAccent.withOpacity(0.8),
+                  ),
+                  Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
+                      // 그룹에 관련된 추가 작업 수행
+                      Navigator.pop(context); // BottomSheet 닫기
+                    },
+                    child: Text("선택"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showContactDetails(BuildContext context, Map<String, dynamic> contact) {
@@ -49,7 +133,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
             color: Colors.transparent,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height * 0.6,
+              height: MediaQuery.of(context).size.height * 0.7,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -112,19 +196,27 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                         const SizedBox(height: 10,),
                                         Text("31", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
                                         const SizedBox(height: 10,),
-                                        Wrap(
-                                          spacing: 8,
-                                          runSpacing: 8,
-                                          children: contact["tags"].map<Widget>((tag) {
-                                            return Chip(
-                                              label: Text(tag),
-                                              backgroundColor: tag == "교회"
-                                                  ? Colors.red[100]
-                                                  : tag == "1청"
-                                                  ? Colors.blue[100]
-                                                  : Colors.grey[400],
-                                            );
-                                          }).toList(),
+                                        Row(
+                                          children: [
+                                            Wrap(
+                                              spacing: 8,
+                                              runSpacing: 8,
+                                              children: contact["tags"].map<Widget>((tag) {
+                                                return Chip(
+                                                  label: Text(tag),
+                                                  backgroundColor: tag == "교회"
+                                                      ? Colors.red[100]
+                                                      : tag == "1청"
+                                                      ? Colors.blue[100]
+                                                      : Colors.grey[400],
+                                                );
+                                              }).toList(),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.add_circle_outline),
+                                              onPressed: () => _showGroupDetails(context), // + 버튼 클릭 시 화면 표시
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(height: 10,),
                                         Checkbox(
