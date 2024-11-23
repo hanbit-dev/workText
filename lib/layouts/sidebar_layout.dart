@@ -16,8 +16,10 @@ class SidebarLayout extends StatelessWidget {
 
     final sidebarRoutes = [
       AppRoute.home,
-      AppRoute.messages,
+      AppRoute.sendMessage,
+      AppRoute.messageHistory,
       AppRoute.contacts,
+      AppRoute.groups,
       AppRoute.settings,
       AppRoute.notice,
       AppRoute.logout,
@@ -33,38 +35,39 @@ class SidebarLayout extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 90,
+              width: 200,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: NavigationDrawer(
-                      backgroundColor: const Color.fromRGBO(48, 48, 48, 1.0),
+                      // backgroundColor: Color.fromRGBO(48, 48, 48, 1.0),
+                      backgroundColor: Colors.white24,
                       selectedIndex: sidebarRoutes.indexOf(currentFirstSideBar),
                       onDestinationSelected: (index) {
                         final selectedRoute = sidebarRoutes[index];
                         if (selectedRoute == AppRoute.logout) {
                           _showLogoutDialog(context);
                         } else {
-                          appStateManager.openSecondSideBar();
+                          // appStateManager.openSecondSideBar();
                           appStateManager.setCurrentRoute(selectedRoute);
                           appStateManager.setCurrentFirstSideBar(selectedRoute);
-                          appStateManager.setSecondSideBar(selectedRoute);
+                          // appStateManager.setSecondSideBar(selectedRoute);
                         }
                       },
                       children: [
                         const Padding(
                           padding: EdgeInsets.fromLTRB(40, 16, 16, 10),
                         ),
-                        ...sidebarRoutes.map((route) =>
-                            NavigationDrawerDestination(
-                              icon: Icon(
-                                route.icon,
-                                color: const Color.fromRGBO(210, 210, 210, 1.0),
-                              ),
-                              selectedIcon: Icon(route.selectedIcon),
-                              label: const SizedBox.shrink(),
-                            )),
+                        ...sidebarRoutes
+                            .map((route) => NavigationDrawerDestination(
+                                  icon: Icon(
+                                    route.icon,
+                                    // color: Color.fromRGBO(210, 210, 210, 1.0),
+                                  ),
+                                  selectedIcon: Icon(route.selectedIcon),
+                                  label: Text(route.label),
+                                )),
                         // if (sidebarRoutes.last != AppRoute.logout)
                         //   const Padding(
                         //     padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
@@ -73,18 +76,14 @@ class SidebarLayout extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                    alignment: Alignment.topCenter, // 상단 중앙 정렬
-                    child: ElevatedButton(
-                      onPressed: appStateManager.isOpenSecondSideBar
-                          ? appStateManager.closeSecondSideBar
-                          : appStateManager.openSecondSideBar,
-                      child: appStateManager.isOpenSecondSideBar
-                          ? const Icon(Icons.keyboard_double_arrow_left)
-                          : const Icon(Icons.keyboard_double_arrow_right),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  //   alignment: Alignment.topCenter, // 상단 중앙 정렬
+                  //   child: ElevatedButton(
+                  //     onPressed: appStateManager.isOpenSecondSideBar ? appStateManager.closeSecondSideBar : appStateManager.openSecondSideBar,
+                  //     child: appStateManager.isOpenSecondSideBar ? const Icon(Icons.keyboard_double_arrow_left) : const Icon(Icons.keyboard_double_arrow_right),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -101,21 +100,46 @@ class SidebarLayout extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('로그아웃'),
-          content: const Text('정말로 로그아웃하시겠습니까?'),
-          actions: <Widget>[
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.orange, size: 30),
+              SizedBox(width: 10),
+              Text("로그아웃", style: TextStyle(color: Colors.black, fontSize: 20)),
+            ],
+          ),
+          content: Text(
+            "정말로 로그아웃 하시겠습니까?",
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
             TextButton(
-              child: const Text('취소'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.indigoAccent,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: Text("취소"),
             ),
-            TextButton(
-              child: const Text('확인'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigoAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 _logout(context);
               },
+              child: Text(
+                "확인",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -127,4 +151,31 @@ class SidebarLayout extends StatelessWidget {
     final userService = Provider.of<UserService>(context, listen: false);
     await userService.logout();
   }
+
+  // void _showLogoutDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('로그아웃'),
+  //         content: const Text('정말로 로그아웃하시겠습니까?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('취소'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: const Text('확인'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               _logout(context);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

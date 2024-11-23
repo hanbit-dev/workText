@@ -34,20 +34,19 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: FloatingActionButton.extended(
-          icon: Image.asset(
-            'assets/images/kakao_logo.png',
-            height: 24,
-            width: 24,
-          ),
-          onPressed: () => _doLogin(context),
-          label: const Text('카카오톡으로 로그인',
-              style: TextStyle(fontWeight: FontWeight.w600)),
-          backgroundColor: const Color(0xFFFEE500),
-          foregroundColor: Colors.black87,
+    return Container(
+      alignment: Alignment.center,
+      child: FloatingActionButton.extended(
+        icon: Image.asset(
+          'assets/images/kakao_logo.png',
+          height: 24,
+          width: 24,
         ),
+        onPressed: () => _doLogin(context),
+        label: const Text('카카오톡으로 로그인',
+            style: TextStyle(fontWeight: FontWeight.w600)),
+        backgroundColor: const Color(0xFFFEE500),
+        foregroundColor: Colors.black87,
       ),
     );
   }

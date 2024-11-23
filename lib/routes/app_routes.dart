@@ -99,19 +99,19 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.home:
         return Icons.home_outlined;
       case AppRoute.contacts:
-        return Icons.person;
+        return Icons.person_outline;
       case AppRoute.groups:
         return Icons.group_outlined;
       case AppRoute.messages:
         return Icons.message_outlined;
       case AppRoute.sendMessage:
-        return Icons.send_outlined;
+        return Icons.message_outlined;
       case AppRoute.messageHistory:
         return Icons.history_outlined;
       case AppRoute.settings:
         return Icons.settings_outlined;
       case AppRoute.notice:
-        return Icons.campaign_outlined;
+        return Icons.error_outline;
       case AppRoute.logout:
         return Icons.logout;
       default:
@@ -130,13 +130,13 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.messages:
         return Icons.message;
       case AppRoute.sendMessage:
-        return Icons.send;
+        return Icons.message;
       case AppRoute.messageHistory:
         return Icons.history;
       case AppRoute.settings:
         return Icons.settings;
       case AppRoute.notice:
-        return Icons.campaign;
+        return Icons.error;
       case AppRoute.logout:
         return Icons.logout;
       default:
