@@ -12,6 +12,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context, listen: false);
+    final nickname = userService.user?['user_nm'] ?? '사용자';
+
     return PopScope(
       canPop: false,
       child: Column(
@@ -24,36 +27,22 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(
+            const Text(
               '환영합니다, ',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              '$_username',
+              '$nickname',
               style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.indigoAccent),
             ),
-            Text(
+            const Text(
               '님!',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ]),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _goToUserInfoScreen,
-            child: const Text('내 정보 수정'),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _deleteUserInfo,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('내 정보 삭제'),
-          ),
         ],
       ),
     );

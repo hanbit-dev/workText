@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:worktext/layouts/second_sidebar_layout.dart';
 import 'package:worktext/services/user_service.dart';
 
 import '../layouts/sidebar_layout.dart';
@@ -97,23 +96,23 @@ class AppRouter extends RouterDelegate<RouteSettings>
           MaterialPage(child: AppRoute.splash.screen),
         if (appStateManager.isInitialized && !userService.isLoggedIn)
           MaterialPage(child: AppRoute.kakaoLogin.screen),
-        if (appStateManager.isLoggedIn && !appStateManager.hasUserInfo)
-          MaterialPage(child: AppRoute.userInfo.screen),
-        if (appStateManager.isLoggedIn && appStateManager.hasUserInfo)
-        MaterialPage(
-          child: SidebarLayout(
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: appStateManager.currentRoute.screen,
+        if (appStateManager.isInitialized && userService.isLoggedIn)
+          if (appStateManager.isOpenSecondSideBar)
+            MaterialPage(
+              child: SidebarLayout(
+                child: Scaffold(
+                  backgroundColor: Colors.white,
+                  body: SafeArea(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        child: appStateManager.currentRoute.screen,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
