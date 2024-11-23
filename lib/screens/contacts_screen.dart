@@ -265,6 +265,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final friendsService = Provider.of<FriendsProvider>(context, listen: true);
+    final friends = friendsService.friends;
+    print(friends);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
