@@ -9,12 +9,10 @@ import '../screens/kakao_login_screen.dart';
 import '../screens/message_history_screen.dart';
 import '../screens/send_message_screen.dart';
 import '../screens/splash_screen.dart';
-import '../screens/user_info_screen.dart';
 
 enum AppRoute {
   splash,
   kakaoLogin,
-  userInfo,
   home,
   contacts,
   contactList,
@@ -36,8 +34,6 @@ extension AppRouteExtension on AppRoute {
         return '/splash';
       case AppRoute.kakaoLogin:
         return '/kakao-login';
-      case AppRoute.userInfo:
-        return '/user-info';
       case AppRoute.home:
         return '/home';
       case AppRoute.contacts:
@@ -71,8 +67,6 @@ extension AppRouteExtension on AppRoute {
         return const SplashScreen();
       case AppRoute.kakaoLogin:
         return const KakaoLoginScreen();
-      case AppRoute.userInfo:
-        return const UserInfoScreen();
       case AppRoute.home:
         return const HomeScreen();
       case AppRoute.contacts:

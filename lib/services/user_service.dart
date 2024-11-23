@@ -1,66 +1,56 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:worktext/repositories/auth_repository.dart';
 
-class UserService {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+class UserService extends ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthRepository _authRepository;
 
-  // 사용자 정보 저장
+  User? _firebaseUser;
+  Map<String, dynamic>? _user;
+  final _initializedCompleter = Completer<void>();
+
+  UserService(this._authRepository) {
+    _auth.authStateChanges().listen((User? user) async {
+      _firebaseUser = user;
+
+      if (user != null && _user == null) {
+        try {
+          _user = await _authRepository.fetchUserInfo();
+        } catch (e) {
+          print('DB 사용자 정보 가져오기 실패: $e');
+        }
+      } else if (user == null) {
+        _user = null;
+      }
+
+      // 초기화 완료
+      if (!_initializedCompleter.isCompleted) {
+        _initializedCompleter.complete();
+      }
+
+      notifyListeners();
+    });
+  }
+
+  bool get isLoggedIn => _firebaseUser != null;
+  User? get firebaseUser => _firebaseUser;
+  Map<String, dynamic>? get user => _user;
+
+  Stream<User?> authStateChanges() => _auth.authStateChanges();
+
   Future<void> saveUserInfo(Map<String, dynamic> userInfo) async {
-    await _storage.write(key: 'user_info', value: json.encode(userInfo));
+    _user = userInfo;
+    notifyListeners();
   }
 
-  // 사용자 정보 가져오기
-  Future<Map<String, dynamic>?> getUserInfo() async {
-    String? userInfoString = await _storage.read(key: 'user_info');
-    if (userInfoString != null) {
-      return json.decode(userInfoString);
-    }
-    return null;
+  Future<void> logout() async {
+    await _auth.signOut();
+    _user = null;
+    notifyListeners();
   }
 
-  // 사용자 닉네임 가져오기
-  Future<String?> getUserNickname() async {
-    Map<String, dynamic>? userInfo = await getUserInfo();
-    return userInfo?['nickname'];
-  }
-
-  // 사용자 이름 가져오기
-  Future<String?> getUserName() async {
-    Map<String, dynamic>? userInfo = await getUserInfo();
-    return userInfo?['name'];
-  }
-
-  // 사용자 정보 삭제
-  Future<void> deleteUserInfo() async {
-    await _storage.delete(key: 'user_info');
-  }
-
-  // 사용자 정보 존재 여부 확인
-  Future<bool> hasUserInfo() async {
-    Map<String, dynamic>? userInfo = await getUserInfo();
-    return userInfo != null && userInfo.isNotEmpty;
-  }
-
-  // 추가 사용자 정보 존재 여부 확인
-  Future<bool> hasAdditionalUserInfo() async {
-    Map<String, dynamic>? userInfo = await getUserInfo();
-    return userInfo != null &&
-        userInfo.containsKey('name') &&
-        userInfo.containsKey('gender') &&
-        userInfo.containsKey('ageGroup');
-  }
-
-  // 추가 사용자 정보 저장 (이름, 성별, 연령대)
-  Future<void> saveAdditionalUserInfo({
-    required String name,
-    required String gender,
-    required String ageGroup,
-  }) async {
-    Map<String, dynamic>? currentInfo = await getUserInfo() ?? {};
-    currentInfo['name'] = name;
-    currentInfo['gender'] = gender;
-    currentInfo['ageGroup'] = ageGroup;
-    await saveUserInfo(currentInfo);
-  }
+  Future<void> waitForInitialization() => _initializedCompleter.future;
 }
