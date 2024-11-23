@@ -312,7 +312,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => {
+                  // friendsService.add("홍길동")
+                  //TODO: 연락처 추가
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -321,7 +324,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => {
+                  //TODO: 연락처 수정
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -330,7 +335,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => {
+                  //TODO: 연락처 삭제
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -342,10 +349,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
           SizedBox(height: 16),
           Container(
             height: 300,
-            child: ListView.builder(
-              itemCount: contacts.length,
+            child: friends != null && friends.length > 0 ? ListView.builder(
+              itemCount: friends.length,
               itemBuilder: (context, index) {
-                final contact = contacts[index];
+                final friend = friends[index];
                 return Card(
                   color: Colors.grey[50],
                   elevation: 2,
@@ -358,23 +365,23 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       checkColor: Colors.white,
                       activeColor: Colors.indigoAccent.withOpacity(0.8),
                     ),
-                    title: Text(contact["name"], style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Row(
-                      children: contact["tags"].map<Widget>((tag) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: Chip(
-                            label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                            backgroundColor: tag == "교회"
-                                ? Colors.red[100]
-                                : tag == "1청"
-                                ? Colors.blue[100]
-                                : Colors.grey[400],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    onTap: () => _showContactDetails(context, contact), // 항목 클릭 시 팝업 호출
+                    title: Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
+                    // subtitle: Row(
+                    //   children: friend["tags"].map<Widget>((tag) {
+                    //     return Padding(
+                    //       padding: const EdgeInsets.only(right: 4.0),
+                    //       child: Chip(
+                    //         label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    //         backgroundColor: tag == "교회"
+                    //             ? Colors.red[100]
+                    //             : tag == "1청"
+                    //             ? Colors.blue[100]
+                    //             : Colors.grey[400],
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    // ),
+                    // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.grey[600]),
                       onPressed: () => _removeContact(index),
@@ -382,7 +389,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   ),
                 );
               },
-            ),
+            ) : Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
