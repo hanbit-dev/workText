@@ -49,7 +49,7 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl$endpoint'),
         headers: headers,
-        body: jsonEncode(body),
+        body: body != null ? jsonEncode(body) : null, // body가 null이면 생략
       );
 
       return _handleResponse(response);

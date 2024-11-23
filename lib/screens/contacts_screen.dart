@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:worktext/services/friend_service.dart';
 
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
@@ -8,6 +10,13 @@ class ContactsScreen extends StatefulWidget {
 }
 
 class _ContactsScreenState extends State<ContactsScreen> {
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => context.read<FriendsProvider>().fetch(),
+    );
+  }
+
   List<Map<String, dynamic>> contacts = [
     {"name": "조미란", "tags": ["교회", "1청"]},
     {"name": "김선재", "tags": ["교회", "1청"]},

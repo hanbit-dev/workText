@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/repositories/auth_repository.dart';
+import 'package:worktext/services/friend_service.dart';
 
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
@@ -34,6 +35,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => AppStateManager(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => FriendsProvider(),
         ),
       ],
       child: const MyApp(),
