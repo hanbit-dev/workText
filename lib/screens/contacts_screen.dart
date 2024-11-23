@@ -29,84 +29,134 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   void _showContactDetails(BuildContext context, Map<String, dynamic> contact) {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          title: const Text(
-            "연락처 상세",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          content: SingleChildScrollView(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10,),
-                    Text("이름", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 15,),
-                    Text("나이", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 15,),
-                    Text("그룹", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 15,),
-                    Text("존댓말", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 15,),
-                    Text("직책", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 50,),
-                  ],
-                ),
-                const SizedBox(width: 30,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10,),
-                    Text(contact["name"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                    const SizedBox(height: 10,),
-                    Text("31", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                    const SizedBox(height: 10,),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: contact["tags"].map<Widget>((tag) {
-                        return Chip(
-                          label: Text(tag),
-                          backgroundColor: tag == "교회"
-                              ? Colors.red[100]
-                              : tag == "1청"
-                              ? Colors.blue[100]
-                              : Colors.grey[400],
-                        );
-                      }).toList(),
+      // barrierDismissible: true, // 외부 클릭으로 닫기
+      barrierLabel: "Contact Details",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.4,
+              height: MediaQuery.of(context).size.height * 0.6,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "연락처 상세 정보",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20,),
+                                Row(
+                                  children: [
+                                    const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 10,),
+                                        Text("이름", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 15,),
+                                        Text("나이", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 15,),
+                                        Text("그룹", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 15,),
+                                        Text("존댓말", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 15,),
+                                        Text("직책", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 50,),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 30,),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 10,),
+                                        Text(contact["name"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                                        const SizedBox(height: 10,),
+                                        Text("31", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                                        const SizedBox(height: 10,),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: contact["tags"].map<Widget>((tag) {
+                                            return Chip(
+                                              label: Text(tag),
+                                              backgroundColor: tag == "교회"
+                                                  ? Colors.red[100]
+                                                  : tag == "1청"
+                                                  ? Colors.blue[100]
+                                                  : Colors.grey[400],
+                                            );
+                                          }).toList(),
+                                        ),
+                                        const SizedBox(height: 10,),
+                                        Checkbox(
+                                          value: true,
+                                          onChanged: (value) {},
+                                          checkColor: Colors.white,
+                                          activeColor: Colors.indigoAccent.withOpacity(0.8),
+                                        ),
+                                        const SizedBox(height: 10,),
+                                        Text("대리", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                                        const SizedBox(height: 50,),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10,),
-                    Checkbox(
-                      value: true,
-                      onChanged: (value) {},
-                      checkColor: Colors.white,
-                      activeColor: Colors.indigoAccent.withOpacity(0.8),
-                    ),
-                    const SizedBox(height: 10,),
-                    Text("대리", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                    const SizedBox(height: 50,),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: const Text("수정"),
+                      ),
+                      const SizedBox(width: 10,),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("닫기"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {},
-              child: const Text("수정"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("닫기"),
-            ),
-          ],
         );
       },
     );
