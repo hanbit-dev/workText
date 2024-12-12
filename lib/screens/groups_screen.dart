@@ -105,26 +105,41 @@ class _GroupScreenState extends State<GroupsScreen> {
                     itemBuilder: (context, index) {
                       final group = groups[index];
                       return Card(
-                        color: Colors.grey[50],
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        margin: EdgeInsets.symmetric(vertical: 4),
-                        child: ListTile(
-                          leading: Checkbox(
-                            value: true,
-                            onChanged: (value) {},
-                            checkColor: Colors.white,
-                            activeColor: Colors.indigoAccent.withOpacity(0.8),
-                          ),
-                          title: Text(group.groupName,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.grey[600]),
-                            onPressed: () => {},
-                          ),
-                        ),
-                      );
+                          color: Colors.grey[50],
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          margin: EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: Checkbox(
+                              value: true,
+                              onChanged: (value) {},
+                              checkColor: Colors.white,
+                              activeColor: Colors.indigoAccent.withOpacity(0.8),
+                            ),
+                            title: Row(
+                              children: [
+                                Text(group.groupName,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                SizedBox(width: 8), // 텍스트와 컬러박스 사이 간격
+                                Container(
+                                  width: 16, // 컬러박스 너비
+                                  height: 16, // 컬러박스 높이
+                                  decoration: BoxDecoration(
+                                    color: Color(int.parse(group
+                                        .groupColor)), // 문자열 컬러코드를 Color로 변환
+                                    borderRadius: BorderRadius.circular(
+                                        4), // 선택사항: 모서리 둥글게
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.grey[600]),
+                              onPressed: () => {},
+                            ),
+                          ));
                     },
                   )
                 : Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
