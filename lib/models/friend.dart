@@ -1,27 +1,27 @@
 class Friend {
   final int id;
   final String friendNm;
-  final String cretDt;
+  final String? grpNmColor;
 
   Friend({
     required this.id,
     required this.friendNm,
-    required this.cretDt,
+    this.grpNmColor,
   });
 
   factory Friend.fromJson(Map<String, dynamic> json) {
     return Friend(
-      id: json['id'],
+      id: json['friend_id'],
       friendNm: json['friend_nm'],
-      cretDt: json['cret_dt'],
+      grpNmColor: json['grp_nm_color'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'friend_id': id,
       'friend_nm': friendNm,
-      'cret_dt': cretDt,
+      'grp_nm_color': grpNmColor,
     };
   }
 }

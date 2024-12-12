@@ -35,6 +35,29 @@ class FriendsProvider extends ChangeNotifier {
     }
   }
 
+  // Example response:
+  // {
+  //   "friend_id": 18,
+  //   "friend_nm": "test",
+  //   "grp_nm": null,
+  //   "honorifics_yn": null,
+  //   "friend_position": null
+  // }
+  Future<Map<String, dynamic>> fetchDetail(String friendId) async {
+    try {
+      _error = null;
+
+      final response = await _apiService
+          .post('/friend/detail-select', body: {'id': friendId});
+      final friend = response['data'];
+
+      return friend;
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
+    }
+  }
+
   Future<void> add(String name) async {
     try {
       _isLoading = true;
