@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:worktext/components/contacts_add_view.dart';
 import 'package:worktext/services/friend_service.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -34,11 +35,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
     {"name": "커뮤니티", "color": "0xFFFFC1C1"},
   ];
 
-  void _addContact(Map<String, dynamic> contact) {
-    setState(() {
-      contacts.add(contact);
-    });
-  }
+  // void _addContact(Map<String, dynamic> contact) {
+  //   setState(() {
+  //     contacts.add(contact);
+  //   });
+  // }
 
   void _removeContact(int index) {
     setState(() {
@@ -124,7 +125,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   void _showContactDetails(BuildContext context, Map<String, dynamic> contact) {
     showGeneralDialog(
       context: context,
-      // barrierDismissible: true, // 외부 클릭으로 닫기
+      barrierDismissible: true, // 외부 클릭으로 닫기
       barrierLabel: "Contact Details",
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
@@ -263,6 +264,24 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
+  //연락처 추가 다이얼로그
+  void _addContacts(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true, // 외부 클릭으로 닫기
+      barrierLabel: "Add Contacts",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(
+            child: Material(
+            color: Colors.transparent,
+            child: ContactsAddView(),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
@@ -315,6 +334,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 onPressed: () => {
                   // friendsService.add("홍길동")
                   //TODO: 연락처 추가
+                  _addContacts(context)
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
