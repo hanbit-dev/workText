@@ -332,7 +332,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
               SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => {
-                  // friendsService.add("홍길동")
                   //TODO: 연락처 추가
                   _addContacts(context)
                 },
