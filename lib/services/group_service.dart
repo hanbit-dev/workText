@@ -34,4 +34,43 @@ class GroupsProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> addGroup(String color, String name) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.put('/group/insert', body: {
+        'grp_nm': name,
+        'grp_color': color,
+      });
+
+      await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteGroup(int id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.post('/group/group-delete', body: {
+        'id': id,
+      });
+
+      await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
