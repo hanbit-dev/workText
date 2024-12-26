@@ -72,4 +72,19 @@ class FriendsProvider extends ChangeNotifier {
       _isLoading = false;
     }
   }
+
+  Future<void> delete(int id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.post('/friend/friend-delete', body: {'id': id});
+      await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+    }
+  }
 }

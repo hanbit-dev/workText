@@ -35,18 +35,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
     {"name": "커뮤니티", "color": "0xFFFFC1C1"},
   ];
 
-  // void _addContact(Map<String, dynamic> contact) {
-  //   setState(() {
-  //     contacts.add(contact);
-  //   });
-  // }
-
-  void _removeContact(int index) {
-    setState(() {
-      contacts.removeAt(index);
-    });
-  }
-
   // 그룹에 + 버튼 클릭 시 아래에 새로운 화면 띄우기
   void _showGroupDetails(BuildContext context) {
     showModalBottomSheet(
@@ -282,6 +270,87 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
+  void _deleteContacts(BuildContext context, int id) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true, // 외부 클릭으로 닫기
+      barrierLabel: "Delete Contacts",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.4,
+              height: MediaQuery.of(context).size.height * 0.7,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "연락처 삭제",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<FriendsProvider>().delete(id);
+                          Navigator.pop(context);
+                        },
+                        child: const Text("삭제"),
+                      ),
+                      const SizedBox(width: 10,),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("취소"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
@@ -332,8 +401,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => {
-                  //TODO: 연락처 추가
-                  _addContacts(context)
+                  _addContacts(context) //연락처 추가
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
@@ -356,6 +424,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ElevatedButton(
                 onPressed: () => {
                   //TODO: 연락처 삭제
+                  // friendsService.delete(id)
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
@@ -403,7 +472,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
                     trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.grey[600]),
-                      onPressed: () => _removeContact(index),
+                      onPressed: () => _deleteContacts(context, friend.id)
                     ),
                   ),
                 );

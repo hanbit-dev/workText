@@ -28,7 +28,7 @@ class _ContactsAddViewState extends State<ContactsAddView> {
       super.dispose();
     }
 
-    var addHonorific = false;
+    bool? _addHonorific = false;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.4,
@@ -132,10 +132,14 @@ class _ContactsAddViewState extends State<ContactsAddView> {
                               children: [
                                 Text("존댓말", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                                 Checkbox(
-                                  value: addHonorific,
-                                  onChanged: (value) {},
-                                  checkColor: Colors.white,
-                                  activeColor: Colors.indigoAccent.withOpacity(0.8),
+                                  value: _addHonorific,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _addHonorific = value ?? false;
+                                    });
+                                  },
+                                  activeColor: Colors.white,
+                                  checkColor: Colors.indigoAccent.withOpacity(0.8),
                                 ),
                               ],
                             ),
