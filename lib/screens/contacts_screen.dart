@@ -270,7 +270,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
-  void _deleteContacts(BuildContext context, int id) {
+  void _deleteContacts(BuildContext context, {int id = 0, bool allDelete = false}) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true, // 외부 클릭으로 닫기
@@ -281,8 +281,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height * 0.7,
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.25,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -303,34 +303,41 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "연락처 삭제",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "연락처 삭제",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
+                          const SizedBox(height: 10,),
+                          const Text("연락처를 삭제하시겠습니까?"),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  // const SizedBox(height: 20),
                   Row(
                     children: [
                       const Spacer(),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
                         onPressed: () {
-                          context.read<FriendsProvider>().delete(id);
+                          if (allDelete) {
+                            selectedContacts.forEach((contact) {
+                              context.read<FriendsProvider>().delete(contact.id);
+                            });
+                            selectedContacts = [];
+                          } else {
+                            context.read<FriendsProvider>().delete(id);
+                          }
+                          context.read<FriendsProvider>().fetch();
                           Navigator.pop(context);
                         },
                         child: const Text("삭제"),
@@ -340,6 +347,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         onPressed: () => Navigator.pop(context),
                         child: const Text("취소"),
                       ),
+                      const Spacer(),
                     ],
                   ),
                 ],
@@ -350,6 +358,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       },
     );
   }
+  var selectedContacts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -407,30 +416,19 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   backgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                child: Text("추가", style: TextStyle(color: Colors.black)),
+                child: Text("연락처 추가", style: TextStyle(color: Colors.black)),
               ),
               SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => {
-                  //TODO: 연락처 수정
+                  //연락처 삭제
+                  _deleteContacts(context, allDelete: true)
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                child: Text("수정", style: TextStyle(color: Colors.black)),
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => {
-                  //TODO: 연락처 삭제
-                  // friendsService.delete(id)
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: Text("삭제", style: TextStyle(color: Colors.black)),
+                child: Text("연락처 삭제", style: TextStyle(color: Colors.black)),
               ),
             ],
           ),
@@ -447,11 +445,21 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   margin: EdgeInsets.symmetric(vertical: 4),
                   child: ListTile(
-                    leading: Checkbox(
-                      value: true,
-                      onChanged: (value) {},
-                      checkColor: Colors.white,
-                      activeColor: Colors.indigoAccent.withOpacity(0.8),
+                    leading:
+                    IconButton(
+                      icon: Icon(
+                        selectedContacts.contains(friend) ? Icons.check_box : Icons.check_box_outline_blank,
+                        color: selectedContacts.contains(friend) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (selectedContacts.contains(friend)) {
+                            selectedContacts.remove(friend);
+                          } else {
+                            selectedContacts.add(friend);
+                          }
+                        });
+                      },
                     ),
                     title: Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
                     // subtitle: Row(
@@ -470,9 +478,19 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     //   }).toList(),
                     // ),
                     // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.grey[600]),
-                      onPressed: () => _deleteContacts(context, friend.id)
+                    trailing:
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.edit, color: Colors.grey[600]),
+                            onPressed: () => {}
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.delete, color: Colors.grey[600]),
+                            onPressed: () => _deleteContacts(context, id: friend.id)
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -483,11 +501,20 @@ class _ContactsScreenState extends State<ContactsScreen> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               children: [
-                Checkbox(
-                  value: true,
-                  onChanged: (value) {},
-                  checkColor: Colors.white,
-                  activeColor: Colors.indigoAccent.withOpacity(0.8),
+                IconButton(
+                  icon: Icon(
+                    (selectedContacts.length == (friends?.length ?? 0)) ? Icons.check_box : Icons.check_box_outline_blank,
+                    color: selectedContacts.length == (friends?.length ?? 0) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      if (selectedContacts.length == (friends?.length ?? 0)) {
+                        selectedContacts = [];
+                      } else {
+                        selectedContacts = [...(friends ?? [])];
+                      }
+                    });
+                  },
                 ),
                 Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
                 Spacer(),
