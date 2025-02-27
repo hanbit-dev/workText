@@ -134,20 +134,40 @@ class _GroupsEditViewState extends State<GroupsEditView> {
               ElevatedButton(
                 onPressed: () async {
                   await groupsService.updateGroup(
-                      group.id, // 그룹 ID
-                      '0x${pickerColor.value.toRadixString(16)}', // 색상
-                      _nameController.text // 이름
-                      );
+                      group.id,
+                      '0x${pickerColor.value.toRadixString(16)}',
+                      _nameController.text
+                  );
                   Navigator.pop(context);
                 },
-                child: const Text("수정"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text(
+                  "수정",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               const SizedBox(
                 width: 10,
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("닫기"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text(
+                  "닫기",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

@@ -3,12 +3,14 @@ class Group {
   final String groupName;
   final String groupColor;
   final String createdAt;
+  bool? isSelected;
 
   Group({
     required this.id,
     required this.groupName,
     required this.groupColor,
     required this.createdAt,
+    this.isSelected = false,
   });
 
   factory Group.fromJson(Map<String, dynamic> json) {

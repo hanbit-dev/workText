@@ -99,6 +99,51 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                   child: Text("검색 결과가 없습니다."),
                 ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Checkbox(
+                    value: filteredFriends.isNotEmpty &&
+                        selectedFriends.length == filteredFriends.length,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        if (value == true) {
+                          selectedFriends = List.from(filteredFriends);
+                        } else {
+                          selectedFriends.clear();
+                        }
+                      });
+                    },
+                    activeColor: Colors.indigoAccent.withOpacity(0.8),
+                  ),
+                  const Text('전체 선택'),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: selectedFriends.isNotEmpty
+                    ? () {
+                        // TODO: 수정 로직 구현
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text(
+                  '수정하기',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

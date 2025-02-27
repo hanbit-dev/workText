@@ -172,7 +172,17 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                                       },
                                     );
                                   },
-                                  child: const Text("수정"),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    "수정",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ],
                             )
