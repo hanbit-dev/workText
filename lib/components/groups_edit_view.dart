@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';
 
-class GroupsAddView extends StatefulWidget {
-  const GroupsAddView({super.key});
+class GroupsEditView extends StatefulWidget {
+  final Group selectedGroup;
+  const GroupsEditView({super.key, required this.selectedGroup});
 
   @override
-  _GroupsAddViewState createState() => _GroupsAddViewState();
+  _GroupsEditViewState createState() => _GroupsEditViewState();
 }
 
-class _GroupsAddViewState extends State<GroupsAddView> {
+class _GroupsEditViewState extends State<GroupsEditView> {
   Color pickerColor = Colors.blue;
-  final TextEditingController _nameController = TextEditingController();
+  late TextEditingController _nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    // 디버깅을 위한 print 추가
+    print('Selected Group Name: ${widget.selectedGroup.groupName}');
+
+    // 그룹 색상 초기화
+    pickerColor = Color(int.parse(widget.selectedGroup.groupColor));
+    // 그룹 이름 초기화
+    _nameController =
+        TextEditingController(text: widget.selectedGroup.groupName);
+
+    // 초기화 후 컨트롤러 값 확인
+    print('Controller Text: ${_nameController.text}');
+  }
+
   void changeColor(Color color) => setState(() => pickerColor = color);
 
   @override
@@ -24,6 +43,7 @@ class _GroupsAddViewState extends State<GroupsAddView> {
   @override
   Widget build(BuildContext context) {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
+    final group = widget.selectedGroup;
 
     return Container(
       width: 700,
@@ -55,7 +75,7 @@ class _GroupsAddViewState extends State<GroupsAddView> {
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            "연락처 추가",
+                            "그룹 수정",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -113,11 +133,14 @@ class _GroupsAddViewState extends State<GroupsAddView> {
               const Spacer(),
               ElevatedButton(
                 onPressed: () async {
-                  await groupsService.addGroup(
-                      '0x' + pickerColor.toHexString(), _nameController.text);
+                  await groupsService.updateGroup(
+                      group.id, // 그룹 ID
+                      '0x${pickerColor.value.toRadixString(16)}', // 색상
+                      _nameController.text // 이름
+                      );
                   Navigator.pop(context);
                 },
-                child: const Text("추가"),
+                child: const Text("수정"),
               ),
               const SizedBox(
                 width: 10,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:worktext/components/group_detail_view.dart';
 import 'package:worktext/components/groups_add_view.dart';
+import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';
 
 class GroupsScreen extends StatefulWidget {
@@ -11,12 +13,15 @@ class GroupsScreen extends StatefulWidget {
 }
 
 class _GroupScreenState extends State<GroupsScreen> {
+  @override
   void initState() {
     super.initState();
     Future.microtask(
       () => context.read<GroupsProvider>().fetch(),
     );
   }
+
+  Group? _selectedGroup;
 
   // 그룹 추가 다이얼로그
   void _addGroups(BuildContext context) {
@@ -26,7 +31,7 @@ class _GroupScreenState extends State<GroupsScreen> {
       barrierLabel: "Add Contacts",
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return Center(
+        return const Center(
           child: Material(
             color: Colors.transparent,
             child: GroupsAddView(),
@@ -36,7 +41,7 @@ class _GroupScreenState extends State<GroupsScreen> {
     );
   }
 
-  void _deleteGroups(BuildContext context, int id) {
+  void _deleteGroup(BuildContext context, int id) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true, // 외부 클릭으로 닫기
@@ -47,7 +52,7 @@ class _GroupScreenState extends State<GroupsScreen> {
           child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -55,8 +60,8 @@ class _GroupScreenState extends State<GroupsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("정말 삭제하시겠습니까?"),
-                    SizedBox(height: 16),
+                    const Text("정말 삭제하시겠습니까?"),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -70,9 +75,9 @@ class _GroupScreenState extends State<GroupsScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("삭제"),
+                          child: const Text("삭제"),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -82,7 +87,7 @@ class _GroupScreenState extends State<GroupsScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text("취소"),
+                          child: const Text("취소"),
                         ),
                       ],
                     ),
@@ -94,18 +99,14 @@ class _GroupScreenState extends State<GroupsScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final groupsService = Provider.of<GroupsProvider>(context, listen: true);
-    final groups = groupsService.groups;
-
-    return Container(
+  Widget groupView(groups) {
+    return SizedBox(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height - 50 - 32,
               child: Column(
                 children: [
@@ -135,13 +136,14 @@ class _GroupScreenState extends State<GroupsScreen> {
                         }).toList(),
                         onChanged: (value) {},
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: "검색어를 입력해 주세요",
-                            hintStyle: TextStyle(color: Colors.grey),
-                            prefixIcon: Icon(Icons.search, color: Colors.grey),
+                            hintStyle: const TextStyle(color: Colors.grey),
+                            prefixIcon:
+                                const Icon(Icons.search, color: Colors.grey),
                             filled: true,
                             fillColor: Colors.grey[100],
                             border: OutlineInputBorder(
@@ -151,7 +153,7 @@ class _GroupScreenState extends State<GroupsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => {_addGroups(context)},
                         style: ElevatedButton.styleFrom(
@@ -159,13 +161,13 @@ class _GroupScreenState extends State<GroupsScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
-                        child: Text("그룹 추가",
+                        child: const Text("그룹 추가",
                             style: TextStyle(color: Colors.black)),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Expanded(
                     child: Container(
                       child: groups != null && groups.length > 0
@@ -181,7 +183,8 @@ class _GroupScreenState extends State<GroupsScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(12)),
-                                    margin: EdgeInsets.symmetric(vertical: 4),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 4),
                                     child: ListTile(
                                       leading: Checkbox(
                                         value: true,
@@ -192,40 +195,44 @@ class _GroupScreenState extends State<GroupsScreen> {
                                       ),
                                       title: Row(
                                         children: [
-                                          Text(group.groupName,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(width: 8), // 텍스트와 컬러박스 사이 간격
                                           Container(
-                                            width: 16, // 컬러박스 너비
-                                            height: 16, // 컬러박스 높이
+                                            width: 16,
+                                            height: 16,
                                             decoration: BoxDecoration(
-                                              color: Color(int.parse(group
-                                                  .groupColor)), // 문자열 컬러코드를 Color로 변환
+                                              color: Color(
+                                                  int.parse(group.groupColor)),
                                               borderRadius:
-                                                  BorderRadius.circular(
-                                                      4), // 선택사항: 모서리 둥글게
+                                                  BorderRadius.circular(4),
                                             ),
                                           ),
+                                          const SizedBox(width: 8),
+                                          Text(group.groupName,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold)),
                                         ],
                                       ),
                                       trailing: IconButton(
                                         icon: Icon(Icons.delete,
                                             color: Colors.grey[600]),
                                         onPressed: () {
-                                          _deleteGroups(context, group.id);
+                                          _deleteGroup(context, group.id);
                                         },
                                       ),
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedGroup = group;
+                                        });
+                                      },
                                     ));
                               },
                             )
-                          : Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
+                          : const Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
                     ),
                   )
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               height: 50,
               child: Row(
                 children: [
@@ -235,15 +242,17 @@ class _GroupScreenState extends State<GroupsScreen> {
                     checkColor: Colors.white,
                     activeColor: Colors.indigoAccent.withOpacity(0.8),
                   ),
-                  Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Spacer(),
+                  const Text("전체 선택",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Spacer(),
                   IconButton(
-                    icon: Icon(Icons.arrow_left),
+                    icon: const Icon(Icons.arrow_left),
                     onPressed: () {},
                   ),
-                  Text("1", style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text("1",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   IconButton(
-                    icon: Icon(Icons.arrow_right),
+                    icon: const Icon(Icons.arrow_right),
                     onPressed: () {},
                   ),
                 ],
@@ -252,6 +261,35 @@ class _GroupScreenState extends State<GroupsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final groupsService = Provider.of<GroupsProvider>(context, listen: true);
+    final groups = groupsService.groups;
+
+    // selectedGroup 업데이트
+    if (_selectedGroup != null && groups != null) {
+      _selectedGroup = groups.firstWhere(
+        (group) => group.id == _selectedGroup!.id,
+        orElse: () => _selectedGroup!,
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: groupView(groups),
+        ),
+        Expanded(
+          flex: 1,
+          child: _selectedGroup != null
+              ? GroupDetailView(selectedGroup: _selectedGroup!)
+              : Container(),
+        ),
+      ],
     );
   }
 }

@@ -15,6 +15,9 @@ class GroupsProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  List<dynamic> _groupUsers = [];
+  List<dynamic> get groupUsers => _groupUsers;
+
   Future<void> fetch() async {
     try {
       _isLoading = true;
@@ -55,6 +58,27 @@ class GroupsProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateGroup(int id, String color, String name) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.put('/group/update', body: {
+        'id': id,
+        'grp_nm': name,
+        'grp_color': color,
+      });
+
+      await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> deleteGroup(int id) async {
     try {
       _isLoading = true;
@@ -66,6 +90,25 @@ class GroupsProvider extends ChangeNotifier {
       });
 
       await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getGroupUsers(int id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _apiService.post('/group/user-list-select', body: {
+        'id': id,
+      });
+
+      _groupUsers = response['data'];
     } catch (e) {
       _error = e.toString();
     } finally {
