@@ -103,11 +103,9 @@ class AppRouter extends RouterDelegate<RouteSettings>
                 child: Scaffold(
                   backgroundColor: Colors.white,
                   body: SafeArea(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        margin: const EdgeInsets.all(10),
-                        child: appStateManager.currentRoute.screen,
-                      ),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: appStateManager.currentRoute.screen,
                     ),
                   ),
                 ),
