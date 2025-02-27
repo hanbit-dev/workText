@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktext/components/contacts_add_view.dart';
+import 'package:worktext/components/contact/contacts_add_view.dart';
+import 'package:worktext/components/contact/contacts_detail_view.dart';
 import 'package:worktext/services/friend_service.dart';
+import '../models/friend.dart';
 
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
@@ -11,6 +13,10 @@ class ContactsScreen extends StatefulWidget {
 }
 
 class _ContactsScreenState extends State<ContactsScreen> {
+  Friend? _selectedFriend;
+  var selectedContacts = [];
+
+  @override
   void initState() {
     super.initState();
     Future.microtask(
@@ -110,148 +116,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
-  void _showContactDetails(BuildContext context, Map<String, dynamic> contact) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true, // 외부 클릭으로 닫기
-      barrierLabel: "Contact Details",
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return Center(
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.4,
-              height: MediaQuery.of(context).size.height * 0.7,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "연락처 상세 정보",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20,),
-                                Row(
-                                  children: [
-                                    const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10,),
-                                        Text("이름", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 15,),
-                                        Text("나이", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 15,),
-                                        Text("그룹", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 15,),
-                                        Text("존댓말", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 15,),
-                                        Text("직책", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 50,),
-                                      ],
-                                    ),
-                                    const SizedBox(width: 30,),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(height: 10,),
-                                        Text(contact["name"], style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                                        const SizedBox(height: 10,),
-                                        Text("31", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                                        const SizedBox(height: 10,),
-                                        Row(
-                                          children: [
-                                            Wrap(
-                                              spacing: 8,
-                                              runSpacing: 8,
-                                              children: contact["tags"].map<Widget>((tag) {
-                                                return Chip(
-                                                  label: Text(tag),
-                                                  backgroundColor: tag == "교회"
-                                                      ? Colors.red[100]
-                                                      : tag == "1청"
-                                                      ? Colors.blue[100]
-                                                      : Colors.grey[400],
-                                                );
-                                              }).toList(),
-                                            ),
-                                            IconButton(
-                                              icon: Icon(Icons.add_circle_outline),
-                                              onPressed: () => _showGroupDetails(context), // + 버튼 클릭 시 화면 표시
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Checkbox(
-                                          value: true,
-                                          onChanged: (value) {},
-                                          checkColor: Colors.white,
-                                          activeColor: Colors.indigoAccent.withOpacity(0.8),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Text("대리", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                                        const SizedBox(height: 50,),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text("수정"),
-                      ),
-                      const SizedBox(width: 10,),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("닫기"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   //연락처 추가 다이얼로그
   void _addContacts(BuildContext context) {
     showGeneralDialog(
@@ -273,7 +137,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
   void _deleteContacts(BuildContext context, {int id = 0, bool allDelete = false}) {
     showGeneralDialog(
       context: context,
-      barrierDismissible: true, // 외부 클릭으로 닫기
+      barrierDismissible: true,
+      // 외부 클릭으로 닫기
       barrierLabel: "Delete Contacts",
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (context, animation, secondaryAnimation) {
@@ -331,7 +196,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         onPressed: () {
                           if (allDelete) {
                             selectedContacts.forEach((contact) {
-                              context.read<FriendsProvider>().delete(contact.id);
+                              context.read<FriendsProvider>().delete(
+                                  contact.id);
                             });
                             selectedContacts = [];
                           } else {
@@ -358,180 +224,217 @@ class _ContactsScreenState extends State<ContactsScreen> {
       },
     );
   }
-  var selectedContacts = [];
+
+  Widget contactView(friends) {
+    return SizedBox(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 32,
+              child: Column(
+                children: [
+                  const Center(
+                    child: Column(
+                      children: [
+                        Text("연락처", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 24)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      DropdownButton<String>(
+                        value: "전체",
+                        items: ["전체", "교회", "회사"].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {},
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "검색어를 입력해 주세요",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(Icons.search, color: Colors.grey),
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => {
+                          _addContacts(context) //연락처 추가
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: Text("연락처 추가", style: TextStyle(color: Colors.black)),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => {
+                          //연락처 삭제
+                          _deleteContacts(context, allDelete: true)
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: Text("연락처 삭제", style: TextStyle(color: Colors.black)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    height: 300,
+                    child: friends != null && friends.length > 0 ? ListView.builder(
+                      itemCount: friends.length,
+                      itemBuilder: (context, index) {
+                        final friend = friends[index];
+                        return Card(
+                          color: Colors.grey[50],
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          margin: EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading:
+                            IconButton(
+                              icon: Icon(
+                                selectedContacts.contains(friend) ? Icons.check_box : Icons.check_box_outline_blank,
+                                color: selectedContacts.contains(friend) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (selectedContacts.contains(friend)) {
+                                    selectedContacts.remove(friend);
+                                  } else {
+                                    selectedContacts.add(friend);
+                                  }
+                                });
+                              },
+                            ),
+                            title: Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
+                            // subtitle: Row(
+                            //   children: friend["tags"].map<Widget>((tag) {
+                            //     return Padding(
+                            //       padding: const EdgeInsets.only(right: 4.0),
+                            //       child: Chip(
+                            //         label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            //         backgroundColor: tag == "교회"
+                            //             ? Colors.red[100]
+                            //             : tag == "1청"
+                            //             ? Colors.blue[100]
+                            //             : Colors.grey[400],
+                            //       ),
+                            //     );
+                            //   }).toList(),
+                            // ),
+                            // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
+                            trailing:
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.grey[600]),
+                                    onPressed: () => {}
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.grey[600]),
+                                    onPressed: () => _deleteContacts(context, id: friend.id)
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _selectedFriend = friend;
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ) : Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            (selectedContacts.length == (friends?.length ?? 0)) ? Icons.check_box : Icons.check_box_outline_blank,
+                            color: selectedContacts.length == (friends?.length ?? 0) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              if (selectedContacts.length == (friends?.length ?? 0)) {
+                                selectedContacts = [];
+                              } else {
+                                selectedContacts = [...(friends ?? [])];
+                              }
+                            });
+                          },
+                        ),
+                        Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.arrow_left),
+                          onPressed: () {},
+                        ),
+                        Text("1", style: TextStyle(fontWeight: FontWeight.bold)),
+                        IconButton(
+                          icon: Icon(Icons.arrow_right),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final friends = friendsService.friends;
-    print(friends);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Center(
-            child: Column(
-              children: [
-                Text("연락처", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 24)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20,),
-          Row(
-            children: [
-              DropdownButton<String>(
-                value: "전체",
-                items: ["전체", "교회", "회사"].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) {},
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "검색어를 입력해 주세요",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => {
-                  _addContacts(context) //연락처 추가
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: Text("연락처 추가", style: TextStyle(color: Colors.black)),
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () => {
-                  //연락처 삭제
-                  _deleteContacts(context, allDelete: true)
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                child: Text("연락처 삭제", style: TextStyle(color: Colors.black)),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          Container(
-            height: 300,
-            child: friends != null && friends.length > 0 ? ListView.builder(
-              itemCount: friends.length,
-              itemBuilder: (context, index) {
-                final friend = friends[index];
-                return Card(
-                  color: Colors.grey[50],
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  margin: EdgeInsets.symmetric(vertical: 4),
-                  child: ListTile(
-                    leading:
-                    IconButton(
-                      icon: Icon(
-                        selectedContacts.contains(friend) ? Icons.check_box : Icons.check_box_outline_blank,
-                        color: selectedContacts.contains(friend) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (selectedContacts.contains(friend)) {
-                            selectedContacts.remove(friend);
-                          } else {
-                            selectedContacts.add(friend);
-                          }
-                        });
-                      },
-                    ),
-                    title: Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
-                    // subtitle: Row(
-                    //   children: friend["tags"].map<Widget>((tag) {
-                    //     return Padding(
-                    //       padding: const EdgeInsets.only(right: 4.0),
-                    //       child: Chip(
-                    //         label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    //         backgroundColor: tag == "교회"
-                    //             ? Colors.red[100]
-                    //             : tag == "1청"
-                    //             ? Colors.blue[100]
-                    //             : Colors.grey[400],
-                    //       ),
-                    //     );
-                    //   }).toList(),
-                    // ),
-                    // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
-                    trailing:
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                            icon: Icon(Icons.edit, color: Colors.grey[600]),
-                            onPressed: () => {}
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.delete, color: Colors.grey[600]),
-                            onPressed: () => _deleteContacts(context, id: friend.id)
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ) : Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    (selectedContacts.length == (friends?.length ?? 0)) ? Icons.check_box : Icons.check_box_outline_blank,
-                    color: selectedContacts.length == (friends?.length ?? 0) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (selectedContacts.length == (friends?.length ?? 0)) {
-                        selectedContacts = [];
-                      } else {
-                        selectedContacts = [...(friends ?? [])];
-                      }
-                    });
-                  },
-                ),
-                Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.arrow_left),
-                  onPressed: () {},
-                ),
-                Text("1", style: TextStyle(fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: Icon(Icons.arrow_right),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    // selectedContact 업데이트
+    if (_selectedFriend != null && friends != null) {
+      _selectedFriend = friends.firstWhere(
+            (friend) => friend.id == _selectedFriend!.id,
+        orElse: () => _selectedFriend!,
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: contactView(friends)
+        ),
+        Expanded(
+          flex: 1,
+          child: _selectedFriend != null
+              ? ContactsDetailView(selectedFriend: _selectedFriend!)
+              : Container(),
+        )
+      ],
     );
   }
 }
