@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktext/components/group_detail_view.dart';
+import 'package:worktext/components/groups_detail_view.dart';
 import 'package:worktext/components/groups_add_view.dart';
 import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';

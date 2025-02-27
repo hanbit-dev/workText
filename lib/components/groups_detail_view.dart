@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/components/groups_edit_view.dart';
+import 'package:worktext/components/groups_user_view.dart';
 import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';
 
@@ -15,6 +16,8 @@ class GroupDetailView extends StatefulWidget {
 class _GroupDetailViewState extends State<GroupDetailView> {
   Color pickerColor = Colors.blue;
   final TextEditingController _nameController = TextEditingController();
+  bool _showUserView = false;
+
   void changeColor(Color color) => setState(() => pickerColor = color);
 
   @override
@@ -48,14 +51,15 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     final groupUsers = groupsService.groupUsers;
 
     return SizedBox(
+      height: MediaQuery.of(context).size.height - 32,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 32,
-              child: Column(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 64,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 children: [
                   Center(
                     child: Column(
@@ -116,15 +120,30 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold))),
-                                Text(groupUsers.isNotEmpty
-                                    ? groupUsers
-                                        .map((user) =>
-                                            user['friend_nm'].toString())
-                                        .join(', ')
-                                    : "로딩중..."),
-                                const Spacer(),
-                                Icon(Icons.add_circle_outline,
-                                    color: Colors.grey[900])
+                                Expanded(
+                                  child: Text(
+                                    groupUsers.isNotEmpty
+                                        ? groupUsers
+                                            .map((user) =>
+                                                user['friend_nm'].toString())
+                                            .join(', ')
+                                        : "로딩중...",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                IconButton(
+                                  icon: Icon(
+                                      _showUserView
+                                          ? Icons.remove_circle_outline
+                                          : Icons.add_circle_outline,
+                                      color: Colors.grey[900]),
+                                  onPressed: () {
+                                    setState(() {
+                                      _showUserView = !_showUserView;
+                                    });
+                                  },
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -164,8 +183,12 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                 ],
               ),
-            ),
-          ],
+              if (_showUserView)
+                Expanded(
+                  child: GroupsUserView(selectedGroup: widget.selectedGroup),
+                ),
+            ],
+          ),
         ),
       ),
     );
