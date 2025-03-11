@@ -10,13 +10,14 @@ class GroupsProvider extends ChangeNotifier {
   List<Group>? _groups;
   bool _isLoading = false;
   String? _error;
+  List<dynamic> _groupUsers = [];
+  List<dynamic> _groupUsersForSelect = [];
 
   List<Group>? get groups => _groups;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  List<dynamic> _groupUsers = [];
   List<dynamic> get groupUsers => _groupUsers;
+  List<dynamic> get groupUsersForSelect => _groupUsersForSelect;
 
   Future<void> fetch() async {
     try {
@@ -98,7 +99,7 @@ class GroupsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getGroupUsers(int id) async {
+  Future<void> getGroupUsersForSelect(int id) async {
     try {
       _isLoading = true;
       _error = null;
@@ -108,7 +109,49 @@ class GroupsProvider extends ChangeNotifier {
         'id': id,
       });
 
-      _groupUsers = response['data'];
+      _groupUsersForSelect = response['data'];
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getGroupUsers(int id) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _apiService.post('/group/detail-select', body: {
+        'id': id,
+      });
+
+      _groupUsers = response['data']['grp_users'] != null 
+          ? response['data']['grp_users'].toString().split(',')
+          : [];
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateGroupUser(int id, String grpNm, String grpUsers) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.put('/group/user-update', body: {
+        'id': id,
+        'grp_nm': grpNm,
+        'grp_users': grpUsers,
+      });
+
+      await getGroupUsers(id);
     } catch (e) {
       _error = e.toString();
     } finally {

@@ -122,12 +122,11 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                                             fontWeight: FontWeight.bold))),
                                 Expanded(
                                   child: Text(
-                                    groupUsers.isNotEmpty
-                                        ? groupUsers
-                                            .map((user) =>
-                                                user['friend_nm'].toString())
-                                            .join(', ')
-                                        : "로딩중...",
+                                    groupsService.isLoading
+                                        ? "로딩중..."
+                                        : groupUsers.isNotEmpty
+                                            ? groupUsers.join(', ')
+                                            : "그룹원이 없습니다",
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -173,7 +172,8 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                                    backgroundColor:
+                                        Colors.indigoAccent.withOpacity(0.8),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 24,
                                       vertical: 12,

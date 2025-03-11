@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:worktext/models/group.dart';
 import 'package:provider/provider.dart';
-import 'package:worktext/services/friend_service.dart';
+import 'package:worktext/models/group.dart';
+import 'package:worktext/services/group_service.dart';
 
 class GroupsUserView extends StatefulWidget {
   final Group selectedGroup;
@@ -27,16 +27,41 @@ class _GroupsUserViewState extends State<GroupsUserView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => context.read<FriendsProvider>().fetch(),
-    );
+    _loadGroupUsers();
+  }
+
+  @override
+  void didUpdateWidget(GroupsUserView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedGroup.id != widget.selectedGroup.id) {
+      _loadGroupUsers();
+    }
+  }
+
+  void _loadGroupUsers() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context
+          .read<GroupsProvider>()
+          .getGroupUsersForSelect(widget.selectedGroup.id);
+
+      if (mounted) {
+        setState(() {
+          selectedFriends = context
+              .read<GroupsProvider>()
+              .groupUsersForSelect
+              .where((friend) => friend['grp_user_id'] != null)
+              .toList();
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final friendsService = Provider.of<FriendsProvider>(context, listen: true);
-    final friends = friendsService.friends;
+    final groupsService = Provider.of<GroupsProvider>(context, listen: true);
+    final friends = groupsService.groupUsersForSelect;
     final filteredFriends = getFilteredFriends(friends);
+    final isLoading = groupsService.isLoading;
 
     return Column(
       children: [
@@ -63,41 +88,46 @@ class _GroupsUserViewState extends State<GroupsUserView> {
               borderSide: BorderSide.none,
             ),
           ),
+          enabled: !isLoading,
         ),
         const SizedBox(height: 20),
         Expanded(
-          child: filteredFriends.isNotEmpty
-              ? ListView.builder(
-                  itemCount: filteredFriends.length,
-                  itemBuilder: (context, index) {
-                    final friend = filteredFriends[index];
-                    return Card(
-                      color: Colors.grey[50],
-                      elevation: 2,
-                      margin: EdgeInsets.symmetric(vertical: 4),
-                      child: ListTile(
-                        leading: Checkbox(
-                          value: selectedFriends.contains(friend),
-                          onChanged: (bool? value) {
-                            setState(() {
-                              if (value == true) {
-                                selectedFriends.add(friend);
-                              } else {
-                                selectedFriends.remove(friend);
-                              }
-                            });
-                          },
-                          activeColor: Colors.indigoAccent.withOpacity(0.8),
-                        ),
-                        title: Text(friend.friendNm,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                    );
-                  },
-                )
-              : const Center(
-                  child: Text("검색 결과가 없습니다."),
-                ),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : filteredFriends.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: filteredFriends.length,
+                      itemBuilder: (context, index) {
+                        final friend = filteredFriends[index];
+                        return Card(
+                          color: Colors.grey[50],
+                          elevation: 2,
+                          margin: EdgeInsets.symmetric(vertical: 4),
+                          child: ListTile(
+                            leading: Checkbox(
+                              value: selectedFriends.contains(friend),
+                              onChanged: isLoading
+                                  ? null
+                                  : (bool? value) {
+                                      setState(() {
+                                        if (value == true) {
+                                          selectedFriends.add(friend);
+                                        } else {
+                                          selectedFriends.remove(friend);
+                                        }
+                                      });
+                                    },
+                              activeColor: Colors.indigoAccent.withOpacity(0.8),
+                            ),
+                            title: Text(friend['friend_nm'],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: Text("검색 결과가 없습니다."),
+                    ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -109,26 +139,36 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                   Checkbox(
                     value: filteredFriends.isNotEmpty &&
                         selectedFriends.length == filteredFriends.length,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value == true) {
-                          selectedFriends = List.from(filteredFriends);
-                        } else {
-                          selectedFriends.clear();
-                        }
-                      });
-                    },
+                    onChanged: isLoading
+                        ? null
+                        : (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                selectedFriends = List.from(filteredFriends);
+                              } else {
+                                selectedFriends.clear();
+                              }
+                            });
+                          },
                     activeColor: Colors.indigoAccent.withOpacity(0.8),
                   ),
                   const Text('전체 선택'),
                 ],
               ),
               ElevatedButton(
-                onPressed: selectedFriends.isNotEmpty
-                    ? () {
-                        // TODO: 수정 로직 구현
-                      }
-                    : null,
+                onPressed: (isLoading || selectedFriends.isEmpty)
+                    ? null
+                    : () {
+                        final grpUsers = selectedFriends
+                            .map((friend) => friend['friend_id'])
+                            .join(',');
+
+                        groupsService.updateGroupUser(
+                          widget.selectedGroup.id,
+                          widget.selectedGroup.groupName,
+                          grpUsers,
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   padding: const EdgeInsets.symmetric(
@@ -136,10 +176,19 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                     vertical: 12,
                   ),
                 ),
-                child: const Text(
-                  '수정하기',
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        '수정하기',
+                        style: TextStyle(color: Colors.white),
+                      ),
               ),
             ],
           ),
