@@ -101,8 +101,12 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                         return Card(
                           color: Colors.grey[50],
                           elevation: 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           margin: EdgeInsets.symmetric(vertical: 4),
                           child: ListTile(
+                            title: Text(friend['friend_nm'],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             leading: Checkbox(
                               value: selectedFriends.contains(friend),
                               onChanged: isLoadingList
@@ -118,8 +122,17 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                                     },
                               activeColor: Colors.indigoAccent.withOpacity(0.8),
                             ),
-                            title: Text(friend['friend_nm'],
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            onTap: isLoadingList
+                                ? null
+                                : () {
+                                    setState(() {
+                                      if (selectedFriends.contains(friend)) {
+                                        selectedFriends.remove(friend);
+                                      } else {
+                                        selectedFriends.add(friend);
+                                      }
+                                    });
+                                  },
                           ),
                         );
                       },
