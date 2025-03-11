@@ -22,6 +22,8 @@ class _GroupScreenState extends State<GroupsScreen> {
   }
 
   Group? _selectedGroup;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   // 그룹 추가 다이얼로그
   void _addGroups(BuildContext context) {
@@ -99,7 +101,12 @@ class _GroupScreenState extends State<GroupsScreen> {
     );
   }
 
-  Widget groupView(groups) {
+  Widget groupView(List<Group>? groups) {
+    // Filter groups based on search query
+    final filteredGroups = groups?.where((group) => 
+      group.groupName.toLowerCase().contains(_searchQuery.toLowerCase())
+    ).toList();
+    
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -115,19 +122,14 @@ class _GroupScreenState extends State<GroupsScreen> {
           const SizedBox(height: 20),
           Row(
             children: [
-              DropdownButton<String>(
-                value: "전체",
-                items: ["전체", "교회", "회사"].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) {},
-              ),
-              const SizedBox(width: 8),
               Expanded(
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: "검색어를 입력해 주세요",
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -161,11 +163,11 @@ class _GroupScreenState extends State<GroupsScreen> {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: groups != null && groups.isNotEmpty
+            child: filteredGroups != null && filteredGroups.isNotEmpty
                 ? ListView.builder(
-                    itemCount: groups.length,
+                    itemCount: filteredGroups.length,
                     itemBuilder: (context, index) {
-                      final group = groups[index];
+                      final group = filteredGroups[index];
                       print('${group.id} + ${group.groupName}');
 
                       return Card(
@@ -175,16 +177,6 @@ class _GroupScreenState extends State<GroupsScreen> {
                               borderRadius: BorderRadius.circular(12)),
                           margin: const EdgeInsets.symmetric(vertical: 4),
                           child: ListTile(
-                            leading: Checkbox(
-                              value: group.isSelected ?? false,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  group.isSelected = value;
-                                });
-                              },
-                              checkColor: Colors.white,
-                              activeColor: Colors.indigoAccent.withOpacity(0.8),
-                            ),
                             title: Row(
                               children: [
                                 Container(
@@ -221,25 +213,6 @@ class _GroupScreenState extends State<GroupsScreen> {
             height: 50,
             child: Row(
               children: [
-                Checkbox(
-                  value: groups != null &&
-                      groups.isNotEmpty &&
-                      groups.every((group) => group.isSelected == true),
-                  onChanged: (bool? value) {
-                    setState(() {
-                      if (groups != null && groups.isNotEmpty) {
-                        for (var group in groups) {
-                          group.isSelected = value;
-                        }
-                      }
-                    });
-                  },
-                  checkColor: Colors.white,
-                  activeColor: Colors.indigoAccent.withOpacity(0.8),
-                ),
-                const Text(
-                  "전체 선택",
-                ),
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.arrow_left),
