@@ -43,7 +43,7 @@ class _GroupsEditViewState extends State<GroupsEditView> {
   @override
   Widget build(BuildContext context) {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
-    final group = widget.selectedGroup;
+    final isUpdating = groupsService.isUpdatingGroup;
 
     return Container(
       width: 700,
@@ -132,14 +132,16 @@ class _GroupsEditViewState extends State<GroupsEditView> {
             children: [
               const Spacer(),
               ElevatedButton(
-                onPressed: () async {
-                  await groupsService.updateGroup(
-                      group.id,
-                      '0x${pickerColor.value.toRadixString(16)}',
-                      _nameController.text
-                  );
-                  Navigator.pop(context);
-                },
+                onPressed: isUpdating
+                    ? null
+                    : () async {
+                        await groupsService.updateGroup(
+                          widget.selectedGroup.id,
+                          '0x${pickerColor.value.toRadixString(16)}',
+                          _nameController.text,
+                        );
+                        Navigator.pop(context);
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   padding: const EdgeInsets.symmetric(
@@ -147,10 +149,19 @@ class _GroupsEditViewState extends State<GroupsEditView> {
                     vertical: 12,
                   ),
                 ),
-                child: const Text(
-                  "수정",
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: isUpdating
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        "수정",
+                        style: TextStyle(color: Colors.white),
+                      ),
               ),
               const SizedBox(
                 width: 10,

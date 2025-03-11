@@ -49,6 +49,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final group = widget.selectedGroup;
     final groupUsers = groupsService.groupUsers;
+    final isLoadingUsers = groupsService.isLoadingGroupUsers;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height - 32,
@@ -122,7 +123,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                                             fontWeight: FontWeight.bold))),
                                 Expanded(
                                   child: Text(
-                                    groupsService.isLoading
+                                    isLoadingUsers
                                         ? "로딩중..."
                                         : groupUsers.isNotEmpty
                                             ? groupUsers.join(', ')

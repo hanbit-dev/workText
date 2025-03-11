@@ -61,7 +61,8 @@ class _GroupsUserViewState extends State<GroupsUserView> {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final friends = groupsService.groupUsersForSelect;
     final filteredFriends = getFilteredFriends(friends);
-    final isLoading = groupsService.isLoading;
+    final isLoadingList = groupsService.isLoadingGroupUsersForSelect;
+    final isUpdating = groupsService.isUpdatingGroupUsers;
 
     return Column(
       children: [
@@ -88,11 +89,11 @@ class _GroupsUserViewState extends State<GroupsUserView> {
               borderSide: BorderSide.none,
             ),
           ),
-          enabled: !isLoading,
+          enabled: !isLoadingList,
         ),
         const SizedBox(height: 20),
         Expanded(
-          child: isLoading
+          child: isLoadingList
               ? const Center(child: CircularProgressIndicator())
               : filteredFriends.isNotEmpty
                   ? ListView.builder(
@@ -106,7 +107,7 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                           child: ListTile(
                             leading: Checkbox(
                               value: selectedFriends.contains(friend),
-                              onChanged: isLoading
+                              onChanged: isLoadingList
                                   ? null
                                   : (bool? value) {
                                       setState(() {
@@ -139,7 +140,7 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                   Checkbox(
                     value: filteredFriends.isNotEmpty &&
                         selectedFriends.length == filteredFriends.length,
-                    onChanged: isLoading
+                    onChanged: isLoadingList
                         ? null
                         : (bool? value) {
                             setState(() {
@@ -156,7 +157,7 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                 ],
               ),
               ElevatedButton(
-                onPressed: (isLoading || selectedFriends.isEmpty)
+                onPressed: (isLoadingList || isUpdating || selectedFriends.isEmpty)
                     ? null
                     : () {
                         final grpUsers = selectedFriends
@@ -176,7 +177,7 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                     vertical: 12,
                   ),
                 ),
-                child: isLoading
+                child: isUpdating
                     ? const SizedBox(
                         width: 20,
                         height: 20,

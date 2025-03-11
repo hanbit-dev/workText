@@ -24,6 +24,7 @@ class _GroupsAddViewState extends State<GroupsAddView> {
   @override
   Widget build(BuildContext context) {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
+    final isAdding = groupsService.isAddingGroup;
 
     return Container(
       width: 700,
@@ -112,12 +113,25 @@ class _GroupsAddViewState extends State<GroupsAddView> {
             children: [
               const Spacer(),
               ElevatedButton(
-                onPressed: () async {
-                  await groupsService.addGroup(
-                      '0x' + pickerColor.toHexString(), _nameController.text);
-                  Navigator.pop(context);
-                },
-                child: const Text("추가"),
+                onPressed: isAdding
+                    ? null
+                    : () async {
+                        await groupsService.addGroup(
+                          '0x${pickerColor.value.toRadixString(16)}',
+                          _nameController.text,
+                        );
+                        Navigator.pop(context);
+                      },
+                child: isAdding
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text("추가"),
               ),
               const SizedBox(
                 width: 10,

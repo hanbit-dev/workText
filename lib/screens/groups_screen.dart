@@ -235,6 +235,11 @@ class _GroupScreenState extends State<GroupsScreen> {
   Widget build(BuildContext context) {
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final groups = groupsService.groups;
+    final isLoading = groupsService.isLoadingGroups;
+
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     // selectedGroup 업데이트
     if (_selectedGroup != null && groups != null) {
