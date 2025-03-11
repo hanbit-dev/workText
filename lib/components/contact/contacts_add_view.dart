@@ -16,19 +16,17 @@ class _ContactsAddViewState extends State<ContactsAddView> {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     // TextEditingController 생성
     final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _groupController = TextEditingController();
     final TextEditingController _positionController = TextEditingController();
 
     @override
     void dispose() {
       // 메모리 누수 방지를 위해 컨트롤러 해제
       _nameController.dispose();
-      _groupController.dispose();
       _positionController.dispose();
       super.dispose();
     }
 
-    bool? _addHonorific = false;
+    bool _addHonorific = false;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.4,
@@ -96,14 +94,8 @@ class _ContactsAddViewState extends State<ContactsAddView> {
                                 const SizedBox(width: 20,),
                                 SizedBox(
                                   width: 200,
-                                  child: TextField(
-                                    controller: _groupController,
-                                    decoration: InputDecoration(
-                                      hintText: "텍스트를 입력하세요",
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
+                                  child: Text(
+                                    "그룹 선택"
                                   ),
                                 ),
                               ],
@@ -158,11 +150,11 @@ class _ContactsAddViewState extends State<ContactsAddView> {
               const Spacer(),
               ElevatedButton(
                 onPressed: () => {
-                  //TODO: 연락처 정보 서버 전송
-                  //TODO: 다른 정보 삽입
                   //TODO: 빈값 예외 처리
                   //TODO: 연락처 추가 완료 알림창 추가
-                  friendsService.add(_nameController.text)
+                  friendsService.add(_nameController.text,
+                      _addHonorific ? "y" : "n",
+                      _positionController.text)
                 },
                 child: const Text("추가"),
               ),

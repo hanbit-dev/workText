@@ -16,25 +16,36 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
   void initState() {
     super.initState();
     Future.microtask(
-        () => context.read<FriendsProvider>().fetch(),
+        () => context.read<FriendsProvider>().fetchDetail(widget.selectedFriend.id),
     );
+  }
+
+  @override
+  void didUpdateWidget(ContactsDetailView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedFriend.id != widget.selectedFriend.id) {
+      Future.microtask(() {
+        context.read<FriendsProvider>().fetchDetail(widget.selectedFriend.id);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final friend = widget.selectedFriend;
-    final friendUsers = friendsService.friends;
+    final friendDetails = friendsService.friendDetails;
 
     return SizedBox(
+      height: MediaQuery.of(context).size.height - 32,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 32,
-              child: Column(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 64,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 children: [
                   Center(
                     child: Column(
@@ -61,24 +72,7 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Text(
-                                  friend.friendNm,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                const SizedBox(
-                                    width: 100,
-                                    child: Text("나이",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold
-                                        ))),
-                                Text(
-                                  "나이",
+                                  friendDetails?.friendNm ?? "",
                                 ),
                               ],
                             ),
@@ -112,7 +106,7 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Text(
-                                  "직책",
+                                  friendDetails?.friendPosition ?? "",
                                 ),
                               ],
                             ),
@@ -155,9 +149,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                     ),
                   )
                 ],
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
