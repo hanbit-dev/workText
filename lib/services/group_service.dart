@@ -11,7 +11,7 @@ class GroupsProvider extends ChangeNotifier {
   List<dynamic> _groupUsers = [];
   List<dynamic> _groupUsersForSelect = [];
   String? _error;
-  
+
   // 각 작업별 로딩 상태
   bool _isLoadingGroups = false;
   bool _isLoadingGroupUsers = false;
@@ -26,7 +26,7 @@ class GroupsProvider extends ChangeNotifier {
   List<dynamic> get groupUsers => _groupUsers;
   List<dynamic> get groupUsersForSelect => _groupUsersForSelect;
   String? get error => _error;
-  
+
   bool get isLoadingGroups => _isLoadingGroups;
   bool get isLoadingGroupUsers => _isLoadingGroupUsers;
   bool get isLoadingGroupUsersForSelect => _isLoadingGroupUsersForSelect;
@@ -36,6 +36,8 @@ class GroupsProvider extends ChangeNotifier {
   bool get isUpdatingGroupUsers => _isUpdatingGroupUsers;
 
   Future<void> fetch() async {
+    if (_isLoadingGroups) return;
+
     try {
       _isLoadingGroups = true;
       _error = null;
@@ -142,7 +144,7 @@ class GroupsProvider extends ChangeNotifier {
         'id': id,
       });
 
-      _groupUsers = response['data']['grp_users'] != null 
+      _groupUsers = response['data']['grp_users'] != null
           ? response['data']['grp_users'].toString().split(',')
           : [];
     } catch (e) {

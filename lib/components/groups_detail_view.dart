@@ -24,6 +24,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<GroupsProvider>().getGroupUsers(widget.selectedGroup.id);
     });
   }
@@ -33,6 +34,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedGroup.id != widget.selectedGroup.id) {
       Future.microtask(() {
+        if (!mounted) return;
         context.read<GroupsProvider>().getGroupUsers(widget.selectedGroup.id);
       });
     }

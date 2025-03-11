@@ -16,9 +16,12 @@ class _GroupScreenState extends State<GroupsScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => context.read<GroupsProvider>().fetch(),
-    );
+    // 데이터가 이미 있는 경우에만 fetch 호출
+    if (context.read<GroupsProvider>().groups == null) {
+      Future.microtask(
+        () => context.read<GroupsProvider>().fetch(),
+      );
+    }
   }
 
   Group? _selectedGroup;

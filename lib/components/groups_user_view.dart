@@ -19,8 +19,9 @@ class _GroupsUserViewState extends State<GroupsUserView> {
     if (friends == null) return [];
     if (searchQuery.isEmpty) return friends;
     return friends
-        .where((friend) =>
-            friend.friendNm.toLowerCase().contains(searchQuery.toLowerCase()))
+        .where((friend) => friend['friend_nm']
+            .toLowerCase()
+            .contains(searchQuery.toLowerCase()))
         .toList();
   }
 
@@ -39,20 +40,17 @@ class _GroupsUserViewState extends State<GroupsUserView> {
   }
 
   void _loadGroupUsers() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context
-          .read<GroupsProvider>()
-          .getGroupUsersForSelect(widget.selectedGroup.id);
+    if (!mounted) return;
+    Future.microtask(() async {
+      final provider = context.read<GroupsProvider>();
+      await provider.getGroupUsersForSelect(widget.selectedGroup.id);
 
-      if (mounted) {
-        setState(() {
-          selectedFriends = context
-              .read<GroupsProvider>()
-              .groupUsersForSelect
-              .where((friend) => friend['grp_user_id'] != null)
-              .toList();
-        });
-      }
+      if (!mounted) return;
+      setState(() {
+        selectedFriends = provider.groupUsersForSelect
+            .where((friend) => friend['grp_user_id'] != null)
+            .toList();
+      });
     });
   }
 
@@ -157,19 +155,20 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                 ],
               ),
               ElevatedButton(
-                onPressed: (isLoadingList || isUpdating || selectedFriends.isEmpty)
-                    ? null
-                    : () {
-                        final grpUsers = selectedFriends
-                            .map((friend) => friend['friend_id'])
-                            .join(',');
+                onPressed:
+                    (isLoadingList || isUpdating || selectedFriends.isEmpty)
+                        ? null
+                        : () {
+                            final grpUsers = selectedFriends
+                                .map((friend) => friend['friend_id'])
+                                .join(',');
 
-                        groupsService.updateGroupUser(
-                          widget.selectedGroup.id,
-                          widget.selectedGroup.groupName,
-                          grpUsers,
-                        );
-                      },
+                            groupsService.updateGroupUser(
+                              widget.selectedGroup.id,
+                              widget.selectedGroup.groupName,
+                              grpUsers,
+                            );
+                          },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   padding: const EdgeInsets.symmetric(
