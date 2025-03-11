@@ -29,6 +29,7 @@ class AppStateManager extends ChangeNotifier {
 
   void setCurrentRoute(AppRoute route) {
     _currentRoute = route;
+    _handleRouteChange(route);
     notifyListeners();
   }
 
@@ -69,6 +70,10 @@ class AppStateManager extends ChangeNotifier {
     _isOpenSecondSideBar = false;
     notifyListeners();
   }
+
+  void _handleRouteChange(AppRoute route) {
+    notifyListeners();
+  }
 }
 
 class AppRouter extends RouterDelegate<RouteSettings>
@@ -97,20 +102,19 @@ class AppRouter extends RouterDelegate<RouteSettings>
         if (appStateManager.isInitialized && !userService.isLoggedIn)
           MaterialPage(child: AppRoute.kakaoLogin.screen),
         if (appStateManager.isInitialized && userService.isLoggedIn)
-          if (appStateManager.isOpenSecondSideBar)
-            MaterialPage(
-              child: SidebarLayout(
-                child: Scaffold(
-                  backgroundColor: Colors.white,
-                  body: SafeArea(
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: appStateManager.currentRoute.screen,
-                    ),
+          MaterialPage(
+            child: SidebarLayout(
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                body: SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: appStateManager.currentRoute.screen,
                   ),
                 ),
               ),
             ),
+          ),
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
@@ -127,7 +131,20 @@ class AppRouter extends RouterDelegate<RouteSettings>
       (r) => r.path == configuration.name,
       orElse: () => AppRoute.home,
     );
+
     appStateManager.setCurrentRoute(route);
+    appStateManager.setCurrentFirstSideBar(route);
+  }
+
+  @override
+  RouteSettings? get currentConfiguration {
+    if (!appStateManager.isInitialized) {
+      return const RouteSettings(name: '/splash');
+    }
+    if (!userService.isLoggedIn) {
+      return const RouteSettings(name: '/kakao-login');
+    }
+    return RouteSettings(name: appStateManager.currentRoute.path);
   }
 }
 
