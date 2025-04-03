@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktext/components/groups_detail_view.dart';
-import 'package:worktext/components/groups_add_view.dart';
+import 'package:worktext/components/groups/groups_detail_view.dart';
+import 'package:worktext/components/groups/groups_add_view.dart';
 import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';
 
@@ -106,10 +106,11 @@ class _GroupScreenState extends State<GroupsScreen> {
 
   Widget groupView(List<Group>? groups) {
     // Filter groups based on search query
-    final filteredGroups = groups?.where((group) => 
-      group.groupName.toLowerCase().contains(_searchQuery.toLowerCase())
-    ).toList();
-    
+    final filteredGroups = groups
+        ?.where((group) =>
+            group.groupName.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

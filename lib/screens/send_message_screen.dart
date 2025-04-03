@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:worktext/components/msg_input_bar.dart';
+import 'package:worktext/components/send_message/send_message_select_view.dart';
 
 class SendMessageScreen extends StatefulWidget {
   const SendMessageScreen({super.key});
@@ -24,31 +25,42 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
     setState(() {
       _isChecked = value ?? false; // null이 아닌 경우로 처리
       if (_isChecked && _controller.text.isNotEmpty) {
-        _controller.text =  _controller.text + '요';
+        _controller.text = _controller.text + '요';
       } else {
         _controller.text = _controller.text.replaceAll('요', '');
       }
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget createMessageView() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0), // 전체 패딩 추가
+      padding: const EdgeInsets.all(16.0),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.start, //위쪽 정렬
-        crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
         children: [
-          const Text(
-            '메세지 생성하기',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          const Center(
+            child: Text(
+              '메세지 생성하기',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24),
+            ),
           ),
-          const SizedBox(height: 20), // 텍스트와 TextField 사이 간격
+          const SizedBox(height: 20),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             decoration: BoxDecoration(
-                color: Colors.indigoAccent.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(15.0)
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
             ),
             child: const Row(
               children: [
@@ -58,10 +70,27 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          MsgInputBar(), // 하단에 ChatInputBar 추가
-          const SizedBox(height: 20), // TextField와 버튼 사이 간격
+          Expanded(
+            child: MsgInputBar(),
+          ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: createMessageView(),
+        ),
+        Expanded(
+          flex: 1,
+          child: SendMessageSelectView(),
+        ),
+      ],
     );
   }
 }

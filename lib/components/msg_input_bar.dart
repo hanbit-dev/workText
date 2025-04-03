@@ -18,60 +18,81 @@ class _MsgInputBarState extends State<MsgInputBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          // color: Color(0xFF333333),
-          color: Colors.indigoAccent.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              style: TextStyle(color: Colors.black),
-              minLines: 1,
-              maxLines: 10,
-              decoration: InputDecoration(
-                hintText: "내용을 입력해주세요",
-                hintStyle: TextStyle(color: Colors.grey),
-                border: InputBorder.none,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                maxLines: null,
+                expands: true,
+                decoration: InputDecoration(
+                  hintText: "내용을 입력해주세요",
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  border: InputBorder.none,
+                ),
               ),
             ),
-            const SizedBox(height: 8), // TextField와 아이콘들 사이의 간격
-            Row(
+          ),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
+            ),
+            child: Row(
               children: [
                 ElevatedButton(
                   onPressed: _toggleLanguageMode,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.indigoAccent.withOpacity(0.8),
-                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  child: Text(_isFormal ? '존댓말 사용' : '반말 사용'),
+                  child: Text(
+                    _isFormal ? '존댓말 사용' : '반말 사용',
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
-                // IconButton(
-                //   icon: Icon(_isFormal ? Icons.people : Icons.person, color: Colors.indigoAccent),
-                //   onPressed: _toggleLanguageMode,
-                //   tooltip: _isFormal ? '존댓말 사용' : '반말 사용', // 툴팁 추가
-                // ),
-                Spacer(), // 아이콘들을 왼쪽 정렬하고 전송 버튼을 오른쪽에 배치
+                const Spacer(),
                 CircleAvatar(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
-                  radius: 18,
+                  radius: 20,
                   child: IconButton(
-                    icon: Icon(Icons.arrow_upward, color: Colors.white),
+                    icon: const Icon(Icons.arrow_upward, color: Colors.white),
                     onPressed: () {
                       // 전송 버튼 클릭 시 동작
                     },
-                    iconSize: 18,
+                    iconSize: 20,
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

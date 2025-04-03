@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:worktext/components/groups_edit_view.dart';
-import 'package:worktext/components/groups_user_view.dart';
+import 'package:worktext/components/groups/groups_edit_view.dart';
+import 'package:worktext/components/groups/groups_user_view.dart';
 import 'package:worktext/models/group.dart';
 import 'package:worktext/services/group_service.dart';
 
