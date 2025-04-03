@@ -168,20 +168,19 @@ class _GroupsUserViewState extends State<GroupsUserView> {
                 ],
               ),
               ElevatedButton(
-                onPressed:
-                    (isLoadingList || isUpdating || selectedFriends.isEmpty)
-                        ? null
-                        : () {
-                            final grpUsers = selectedFriends
-                                .map((friend) => friend['friend_id'])
-                                .join(',');
+                onPressed: (isLoadingList || isUpdating)
+                    ? null
+                    : () {
+                        final grpUsers = selectedFriends
+                            .map((friend) => friend['friend_id'])
+                            .join(',');
 
-                            groupsService.updateGroupUser(
-                              widget.selectedGroup.id,
-                              widget.selectedGroup.groupName,
-                              grpUsers,
-                            );
-                          },
+                        groupsService.updateGroupUser(
+                          widget.selectedGroup.id,
+                          widget.selectedGroup.groupName,
+                          grpUsers,
+                        );
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   padding: const EdgeInsets.symmetric(
