@@ -318,23 +318,37 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         });
                       },
                     ),
-                    title: Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
+                    title:
+                        Row(
+                          children: [
+                            Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(width: 10),
+                            ...friend.grpNmColor.split(',').map<Widget>((grp) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 4.0),
+                                child: Chip(
+                                  label: Text(grp.split('/').first.trim(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                  backgroundColor: Color(int.parse(grp.split('/').last.trim())),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        ),
                     // subtitle: Row(
-                    //   children: friend["tags"].map<Widget>((tag) {
-                    //     return Padding(
-                    //       padding: const EdgeInsets.only(right: 4.0),
-                    //       child: Chip(
-                    //         label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    //         backgroundColor: tag == "교회"
-                    //             ? Colors.red[100]
-                    //             : tag == "1청"
-                    //             ? Colors.blue[100]
-                    //             : Colors.grey[400],
-                    //       ),
-                    //     );
-                    //   }).toList(),
+                      // children: friend["tags"].map<Widget>((tag) {
+                      //   return Padding(
+                      //     padding: const EdgeInsets.only(right: 4.0),
+                      //     child: Chip(
+                      //       label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      //       backgroundColor: tag == "교회"
+                      //           ? Colors.red[100]
+                      //           : tag == "1청"
+                      //           ? Colors.blue[100]
+                      //           : Colors.grey[400],
+                      //     ),
+                      //   );
+                      // }).toList(),
                     // ),
-                    // onTap: () => _showContactDetails(friend, contact), // 항목 클릭 시 팝업 호출
                     trailing:
                     Row(
                       mainAxisSize: MainAxisSize.min,

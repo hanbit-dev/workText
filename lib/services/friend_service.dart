@@ -29,6 +29,7 @@ class FriendsProvider extends ChangeNotifier {
           .map((json) => Friend.fromJson(json))
           .toList();
 
+      print(response['data']);
       print('친구 목록: $_friends');
     } catch (e) {
       _error = e.toString();
@@ -75,6 +76,22 @@ class FriendsProvider extends ChangeNotifier {
 
       await _apiService.put('/friend/insert',
           body: {'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
+      await fetch();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  Future<void> update(int id, String name, String honor, String position) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _apiService.put('/friend/update',
+          body: {'id': id, 'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
       await fetch();
     } catch (e) {
       _error = e.toString();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:worktext/components/contact/contacts_edit_view.dart';
 import 'package:worktext/services/friend_service.dart';
 import '../../models/friend.dart';
 
@@ -88,8 +89,18 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold
                                         ))),
-                                Text(
-                                  "그룹",
+                                Row(
+                                  children: [
+                                    ...(friend.grpNmColor?.split(',') ?? []).map<Widget>((grp) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(right: 4.0),
+                                        child: Chip(
+                                          label: Text(grp.split('/').first.trim(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                          backgroundColor: Color(int.parse(grp.split('/').last.trim())),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ],
                                 ),
                               ],
                             ),
@@ -123,10 +134,10 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (value) {},
-                                  checkColor: Colors.white,
-                                  activeColor: Colors.indigoAccent.withOpacity(0.8),
+                                  value: friendDetails?.friendHonor == "y",
+                                  onChanged: (value) => { },
+                                  activeColor: Colors.white,
+                                  checkColor: Colors.indigoAccent.withOpacity(0.8),
                                 ),
                               ],
                             ),
@@ -138,6 +149,21 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                 const Spacer(),
                                 ElevatedButton(
                                   onPressed: () => {
+                                    showGeneralDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      barrierLabel: "그룹 수정",
+                                      transitionDuration:
+                                        const Duration(milliseconds: 300),
+                                      pageBuilder: (context, animation, secondaryAnimation) {
+                                        return Center(
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: ContactsEditView(selectedFriend: friendDetails),
+                                          ),
+                                        );
+                                      },
+                                    )
                                   },
                                   child: const Text("수정"),
                                 ),
