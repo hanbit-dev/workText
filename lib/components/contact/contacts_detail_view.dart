@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/components/contact/contacts_edit_view.dart';
+import 'package:worktext/components/contact/contacts_group_view.dart';
 import 'package:worktext/services/friend_service.dart';
 import '../../models/friend.dart';
 
@@ -13,6 +14,8 @@ class ContactsDetailView extends StatefulWidget {
 }
 
 class _ContactsDetailViewState extends State<ContactsDetailView> {
+  bool _showGruopView = false;
+
   @override
   void initState() {
     super.initState();
@@ -91,6 +94,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                         ))),
                                 Row(
                                   children: [
+                                    if (friend.grpNmColor == null)
+                                      Text("소속 그룹 없음"),
+                                    if (friend.grpNmColor != null)
                                     ...(friend.grpNmColor?.split(',') ?? []).map<Widget>((grp) {
                                       return Padding(
                                         padding: const EdgeInsets.only(right: 4.0),
@@ -101,6 +107,20 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                       );
                                     }).toList(),
                                   ],
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  icon: Icon(
+                                    _showGruopView
+                                      ? Icons.remove_circle_outline
+                                      : Icons.add_circle_outline
+                                  ),
+                                  color: Colors.grey[900],
+                                  onPressed: () {
+                                    setState(() {
+                                      _showGruopView = !_showGruopView;
+                                    });
+                                  },
                                 ),
                               ],
                             ),
@@ -133,11 +153,10 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold
                                         ))),
-                                Checkbox(
-                                  value: friendDetails?.friendHonor == "y",
-                                  onChanged: (value) => { },
-                                  activeColor: Colors.white,
-                                  checkColor: Colors.indigoAccent.withOpacity(0.8),
+                                Text(
+                                    friendDetails?.friendHonor == "y"
+                                        ? "존댓말 사용"
+                                        : "존댓말 사용 안함"
                                 ),
                               ],
                             ),
@@ -175,7 +194,11 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                     ),
                   )
                 ],
-              )
+              ),
+              if (_showGruopView)
+                Expanded(
+                    child: ContactsGroupView(selectedFriend: widget.selectedFriend),
+                ),
             ],
           ),
         ),

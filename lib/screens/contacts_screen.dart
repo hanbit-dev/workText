@@ -14,105 +14,13 @@ class ContactsScreen extends StatefulWidget {
 
 class _ContactsScreenState extends State<ContactsScreen> {
   Friend? _selectedFriend;
-  var selectedContacts = [];
+  var _selectedContacts = [];
 
   @override
   void initState() {
     super.initState();
     Future.microtask(
       () => context.read<FriendsProvider>().fetch(),
-    );
-  }
-
-  List<Map<String, dynamic>> contacts = [
-    {"name": "조미란", "tags": ["교회", "1청"]},
-    {"name": "김선재", "tags": ["교회", "1청"]},
-    {"name": "권희연", "tags": ["교회", "2청"]},
-    {"name": "윤태양", "tags": ["교회", "1청", "회사"]},
-    {"name": "아무개", "tags": ["회사"]},
-  ];
-
-  List<Map<String, dynamic>> groups = [
-    {"name": "교회", "color": "0xFFFFC1C1"},
-    {"name": "1청", "color": "0xFFCCE0FF"},
-    {"name": "회사", "color": "0xFFBDBDBD"},
-    {"name": "2청", "color": "0xFFFFC1C1"},
-    {"name": "게임", "color": "0xFFBDBDBD"},
-    {"name": "커뮤니티", "color": "0xFFFFC1C1"},
-  ];
-
-  // 그룹에 + 버튼 클릭 시 아래에 새로운 화면 띄우기
-  void _showGroupDetails(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // BottomSheet 크기 조정 가능
-      builder: (context) {
-        return Container(
-          width: MediaQuery.of(context).size.width * 0.4,
-          height: MediaQuery.of(context).size.height * 0.7,
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "검색어를 입력해 주세요",
-                  hintStyle: TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded( //그룹 리스트 영역
-                  child: ListView.builder(
-                    itemCount: groups.length,
-                    itemBuilder: (context, index) {
-                      final group = groups[index];
-                      return Row(
-                        children: [
-                          Checkbox(
-                            value: true,
-                            onChanged: (value) {},
-                            checkColor: Colors.white,
-                            activeColor: Colors.indigoAccent.withOpacity(0.8),
-                          ),
-                          Chip(
-                              label: Text(group["name"]),
-                              backgroundColor: Color(int.parse(group["color"]))
-                          )
-                        ],
-                      );
-                    },
-                  ),
-              ),
-              Row( //버튼 영역
-                children: [
-                  Checkbox(
-                    value: true,
-                    onChanged: (value) {},
-                    checkColor: Colors.white,
-                    activeColor: Colors.indigoAccent.withOpacity(0.8),
-                  ),
-                  Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      // 그룹에 관련된 추가 작업 수행
-                      Navigator.pop(context); // BottomSheet 닫기
-                    },
-                    child: Text("선택"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -195,11 +103,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                         ),
                         onPressed: () {
                           if (allDelete) {
-                            selectedContacts.forEach((contact) {
+                            _selectedContacts.forEach((contact) {
                               context.read<FriendsProvider>().delete(
                                   contact.id);
                             });
-                            selectedContacts = [];
+                            _selectedContacts = [];
                           } else {
                             context.read<FriendsProvider>().delete(id);
                           }
@@ -278,7 +186,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ElevatedButton(
                 onPressed: () => {
                   //연락처 삭제
-                  if (selectedContacts.isNotEmpty) {
+                  if (_selectedContacts.isNotEmpty) {
                     _deleteContacts(context, allDelete: true)
                   }
                 },
@@ -305,15 +213,15 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     leading:
                     IconButton(
                       icon: Icon(
-                        selectedContacts.contains(friend) ? Icons.check_box : Icons.check_box_outline_blank,
-                        color: selectedContacts.contains(friend) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                        _selectedContacts.contains(friend) ? Icons.check_box : Icons.check_box_outline_blank,
+                        color: _selectedContacts.contains(friend) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
                       ),
                       onPressed: () {
                         setState(() {
-                          if (selectedContacts.contains(friend)) {
-                            selectedContacts.remove(friend);
+                          if (_selectedContacts.contains(friend)) {
+                            _selectedContacts.remove(friend);
                           } else {
-                            selectedContacts.add(friend);
+                            _selectedContacts.add(friend);
                           }
                         });
                       },
@@ -323,6 +231,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                           children: [
                             Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
                             const SizedBox(width: 10),
+                            if (friend.grpNmColor != null)
                             ...friend.grpNmColor.split(',').map<Widget>((grp) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 4.0),
@@ -375,15 +284,15 @@ class _ContactsScreenState extends State<ContactsScreen> {
               children: [
                 IconButton(
                   icon: Icon(
-                    (selectedContacts.length == (friends?.length ?? 0)) ? Icons.check_box : Icons.check_box_outline_blank,
-                    color: selectedContacts.length == (friends?.length ?? 0) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
+                    (_selectedContacts.length == (friends?.length ?? 0)) ? Icons.check_box : Icons.check_box_outline_blank,
+                    color: _selectedContacts.length == (friends?.length ?? 0) ? Colors.indigoAccent.withOpacity(0.8) : Colors.grey[500],
                   ),
                   onPressed: () {
                     setState(() {
-                      if (selectedContacts.length == (friends?.length ?? 0)) {
-                        selectedContacts = [];
+                      if (_selectedContacts.length == (friends?.length ?? 0)) {
+                        _selectedContacts = [];
                       } else {
-                        selectedContacts = [...(friends ?? [])];
+                        _selectedContacts = [...(friends ?? [])];
                       }
                     });
                   },

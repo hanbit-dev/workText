@@ -107,9 +107,11 @@ class _ContactsEditViewState extends State<ContactsEditView> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold
                                     ))),
-                            if (widget.selectedFriend?.grpNm != null)
                               Row(
                                 children: [
+                                  if (widget.selectedFriend?.grpNm == null)
+                                    Text("소속 그룹 없음"),
+                                  if (widget.selectedFriend?.grpNm != null)
                                   ...(widget.selectedFriend!.grpNm!.split(',')).map<Widget>((grp) {
                                     return Padding(
                                       padding: const EdgeInsets.only(right: 4.0),
@@ -170,6 +172,11 @@ class _ContactsEditViewState extends State<ContactsEditView> {
                               },
                               checkColor: Colors.white,
                               activeColor: Colors.indigoAccent.withOpacity(0.8),
+                            ),
+                            Text(
+                                _updateHonor
+                                    ? "존댓말 사용"
+                                    : "존댓말 사용 안함"
                             ),
                           ],
                         ),
