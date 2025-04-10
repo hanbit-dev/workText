@@ -28,9 +28,6 @@ class FriendsProvider extends ChangeNotifier {
       _friends = (response['data'] as List)
           .map((json) => Friend.fromJson(json))
           .toList();
-
-      print(response['data']);
-      print('친구 목록: $_friends');
     } catch (e) {
       _error = e.toString();
     } finally {

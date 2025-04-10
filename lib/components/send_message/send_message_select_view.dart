@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/models/friend.dart';
 import 'package:worktext/services/friend_service.dart';
+import 'package:worktext/utils/index.dart';
 
 class SendMessageSelectView extends StatefulWidget {
   const SendMessageSelectView({super.key});
@@ -13,8 +14,6 @@ class SendMessageSelectView extends StatefulWidget {
 class _SendMessageSelectViewState extends State<SendMessageSelectView> {
   List<Friend> selectedContactsToAdd = [];
   List<Friend> selectedContactsToRemove = [];
-
-  Friend? _selectedFriend;
   List<Friend> addedFriends = [];
 
   @override
@@ -58,10 +57,10 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
 
     void selectAllContactsToRemove() {
       setState(() {
-        if (selectedContactsToRemove.length == (addedFriends?.length ?? 0)) {
+        if (selectedContactsToRemove.length == addedFriends.length) {
           selectedContactsToRemove = [];
         } else {
-          selectedContactsToRemove = [...(addedFriends ?? [])];
+          selectedContactsToRemove = [...addedFriends];
         }
       });
     }
@@ -78,7 +77,7 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
           const SizedBox(height: 20),
           Expanded(
             flex: 1,
-            child: friends != null && friends.length > 0
+            child: friends != null && friends.isNotEmpty
                 ? Column(
                     children: [
                       Expanded(
@@ -86,12 +85,13 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                           itemCount: friends.length,
                           itemBuilder: (context, index) {
                             final friend = friends[index];
+
                             return Card(
                               color: Colors.grey[50],
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              margin: EdgeInsets.symmetric(vertical: 4),
+                              margin: const EdgeInsets.symmetric(vertical: 4),
                               child: ListTile(
                                 leading: IconButton(
                                   icon: Icon(
@@ -114,12 +114,73 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                     });
                                   },
                                 ),
-                                title: Text(friend.friendNm,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                title: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Tooltip(
+                                        message: friend.friendNm,
+                                        child: Text(
+                                          friend.friendNm,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Wrap(
+                                        spacing: 4,
+                                        children:
+                                            (friend.grpNmColor?.split(',') ??
+                                                    [])
+                                                .map<Widget>((grp) {
+                                          return SizedBox(
+                                              width: 100,
+                                              child: Chip(
+                                                label: Tooltip(
+                                                  message: grp
+                                                      .split('/')
+                                                      .first
+                                                      .trim(),
+                                                  child: Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      grp
+                                                          .split('/')
+                                                          .first
+                                                          .trim(),
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color:
+                                                              getTextColorFromBackgroundColor(
+                                                                  grp
+                                                                      .split(
+                                                                          '/')
+                                                                      .last
+                                                                      .trim()))),
+                                                ),
+                                                backgroundColor: Color(
+                                                    int.parse(grp
+                                                        .split('/')
+                                                        .last
+                                                        .trim())),
+                                                side: BorderSide.none,
+                                              ));
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
-                                    _selectedFriend = friend;
+                                    if (selectedContactsToAdd
+                                        .contains(friend)) {
+                                      selectedContactsToAdd.remove(friend);
+                                    } else {
+                                      selectedContactsToAdd.add(friend);
+                                    }
                                   });
                                 },
                               ),
@@ -143,9 +204,9 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               '전체선택',
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                           const Spacer(),
@@ -164,14 +225,14 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                       )
                     ],
                   )
-                : Center(
+                : const Center(
                     child: Text("저장된 연락처가 없습니다. 연락처를 추가해주세요!"),
                   ),
           ),
           const SizedBox(height: 25),
           Expanded(
             flex: 1,
-            child: addedFriends != null && addedFriends.length > 0
+            child: addedFriends.isNotEmpty
                 ? Column(
                     children: [
                       Row(
@@ -189,11 +250,15 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               '전체선택',
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
+                          const Spacer(),
+                          const Text('메세지 전송 리스트',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                           const Spacer(),
                           CircleAvatar(
                             backgroundColor:
@@ -219,7 +284,7 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              margin: EdgeInsets.symmetric(vertical: 4),
+                              margin: const EdgeInsets.symmetric(vertical: 4),
                               child: ListTile(
                                 leading: IconButton(
                                   icon: Icon(
@@ -242,12 +307,70 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                     });
                                   },
                                 ),
-                                title: Text(friend.friendNm,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                title: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Tooltip(
+                                        message: friend.friendNm,
+                                        child: Text(
+                                          friend.friendNm,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Wrap(
+                                        spacing: 4,
+                                        children:
+                                            (friend.grpNmColor?.split(',') ??
+                                                    [])
+                                                .map<Widget>((grp) {
+                                          return SizedBox(
+                                              width: 100,
+                                              child: Chip(
+                                                label: Tooltip(
+                                                    message: grp
+                                                        .split('/')
+                                                        .first
+                                                        .trim(),
+                                                    child: Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        grp
+                                                            .split('/')
+                                                            .first
+                                                            .trim(),
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: getTextColorFromBackgroundColor(
+                                                                grp
+                                                                    .split('/')
+                                                                    .last
+                                                                    .trim())))),
+                                                backgroundColor: Color(
+                                                    int.parse(grp
+                                                        .split('/')
+                                                        .last
+                                                        .trim())),
+                                                side: BorderSide.none,
+                                              ));
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
-                                    _selectedFriend = friend;
+                                    if (selectedContactsToRemove
+                                        .contains(friend)) {
+                                      selectedContactsToRemove.remove(friend);
+                                    } else {
+                                      selectedContactsToRemove.add(friend);
+                                    }
                                   });
                                 },
                               ),
@@ -257,7 +380,7 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                       ),
                     ],
                   )
-                : Center(
+                : const Center(
                     child: Text("메시지를 생성할 연락처를 선택해주세요!"),
                   ),
           ),
