@@ -2,19 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/models/friend.dart';
 import 'package:worktext/services/friend_service.dart';
-import 'package:worktext/utils/index.dart';
+import 'package:worktext/components/color_chip.dart';
 
 class SendMessageSelectView extends StatefulWidget {
-  const SendMessageSelectView({super.key});
+  final Function(List<Friend>)? onFriendsSelected;
+
+  const SendMessageSelectView({
+    super.key,
+    this.onFriendsSelected,
+  });
 
   @override
-  _SendMessageSelectViewState createState() => _SendMessageSelectViewState();
+  State<SendMessageSelectView> createState() => _SendMessageSelectViewState();
 }
 
 class _SendMessageSelectViewState extends State<SendMessageSelectView> {
   List<Friend> selectedContactsToAdd = [];
   List<Friend> selectedContactsToRemove = [];
   List<Friend> addedFriends = [];
+
+  List<Friend> getSelectedFriends() {
+    return List<Friend>.from(addedFriends);
+  }
 
   @override
   void initState() {
@@ -44,6 +53,9 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
         addedFriends = [
           ...{...addedFriends, ...selectedContactsToAdd}
         ];
+        if (widget.onFriendsSelected != null) {
+          widget.onFriendsSelected!(addedFriends);
+        }
       });
     }
 
@@ -52,6 +64,9 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
         addedFriends = addedFriends
             .where((friend) => !selectedContactsToRemove.contains(friend))
             .toList();
+        if (widget.onFriendsSelected != null) {
+          widget.onFriendsSelected!(addedFriends);
+        }
       });
     }
 
@@ -136,38 +151,15 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                             (friend.grpNmColor?.split(',') ??
                                                     [])
                                                 .map<Widget>((grp) {
-                                          return SizedBox(
-                                              width: 100,
-                                              child: Chip(
-                                                label: Tooltip(
-                                                  message: grp
-                                                      .split('/')
-                                                      .first
-                                                      .trim(),
-                                                  child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      grp
-                                                          .split('/')
-                                                          .first
-                                                          .trim(),
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color:
-                                                              getTextColorFromBackgroundColor(
-                                                                  grp
-                                                                      .split(
-                                                                          '/')
-                                                                      .last
-                                                                      .trim()))),
-                                                ),
-                                                backgroundColor: Color(
-                                                    int.parse(grp
-                                                        .split('/')
-                                                        .last
-                                                        .trim())),
-                                                side: BorderSide.none,
-                                              ));
+                                          final groupName =
+                                              grp.split('/').first.trim();
+                                          final colorValue =
+                                              grp.split('/').last.trim();
+                                          return ColorChip(
+                                            text: groupName,
+                                            backgroundColor:
+                                                Color(int.parse(colorValue)),
+                                          );
                                         }).toList(),
                                       ),
                                     ),
@@ -329,35 +321,15 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
                                             (friend.grpNmColor?.split(',') ??
                                                     [])
                                                 .map<Widget>((grp) {
-                                          return SizedBox(
-                                              width: 100,
-                                              child: Chip(
-                                                label: Tooltip(
-                                                    message: grp
-                                                        .split('/')
-                                                        .first
-                                                        .trim(),
-                                                    child: Text(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        grp
-                                                            .split('/')
-                                                            .first
-                                                            .trim(),
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: getTextColorFromBackgroundColor(
-                                                                grp
-                                                                    .split('/')
-                                                                    .last
-                                                                    .trim())))),
-                                                backgroundColor: Color(
-                                                    int.parse(grp
-                                                        .split('/')
-                                                        .last
-                                                        .trim())),
-                                                side: BorderSide.none,
-                                              ));
+                                          final groupName =
+                                              grp.split('/').first.trim();
+                                          final colorValue =
+                                              grp.split('/').last.trim();
+                                          return ColorChip(
+                                            text: groupName,
+                                            backgroundColor:
+                                                Color(int.parse(colorValue)),
+                                          );
                                         }).toList(),
                                       ),
                                     ),

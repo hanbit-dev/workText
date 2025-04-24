@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:worktext/repositories/auth_repository.dart';
 import 'package:worktext/services/friend_service.dart';
 import 'package:worktext/services/group_service.dart';
-
+import 'package:worktext/services/message_service.dart';
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
 import 'services/user_service.dart';
@@ -42,6 +42,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => GroupsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MessageService(),
         ),
       ],
       child: const MyApp(),

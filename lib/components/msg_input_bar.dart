@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 
 class MsgInputBar extends StatefulWidget {
-  const MsgInputBar({super.key});
+  final TextEditingController? textController;
+  final VoidCallback? onSendMessage;
+
+  const MsgInputBar({
+    super.key,
+    this.textController,
+    this.onSendMessage,
+  });
 
   @override
   _MsgInputBarState createState() => _MsgInputBarState();
 }
 
 class _MsgInputBarState extends State<MsgInputBar> {
-  bool _isFormal = true; // 존댓말 모드 여부
+  late TextEditingController _textController;
 
-  void _toggleLanguageMode() {
-    setState(() {
-      _isFormal = !_isFormal; // 존댓말 모드 전환
-    });
+  @override
+  void initState() {
+    super.initState();
+    _textController = widget.textController ?? TextEditingController();
   }
 
   @override
@@ -38,6 +45,7 @@ class _MsgInputBarState extends State<MsgInputBar> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                controller: _textController,
                 style: const TextStyle(color: Colors.black),
                 maxLines: null,
                 expands: true,
@@ -60,32 +68,13 @@ class _MsgInputBarState extends State<MsgInputBar> {
             ),
             child: Row(
               children: [
-                ElevatedButton(
-                  onPressed: _toggleLanguageMode,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigoAccent.withOpacity(0.8),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    _isFormal ? '존댓말 사용' : '반말 사용',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
                 const Spacer(),
                 CircleAvatar(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),
                   radius: 20,
                   child: IconButton(
                     icon: const Icon(Icons.arrow_upward, color: Colors.white),
-                    onPressed: () {
-                      // 전송 버튼 클릭 시 동작
-                    },
+                    onPressed: widget.onSendMessage,
                     iconSize: 20,
                   ),
                 ),
