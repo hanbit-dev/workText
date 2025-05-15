@@ -51,10 +51,11 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
 
   @override
   Widget build(BuildContext context) {
+    final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final groups = groupsService.groups;
     final filteredGroups = getFilteredGroups(groups);
-    final isUpdating = groupsService.isUpdatingGroupUsers;
+    final isUpdating = friendsService.isLoading;
 
     return Column(
       children: [
@@ -166,14 +167,15 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
               ElevatedButton(
                 onPressed: (isUpdating) ? null : () {
                   final userGrps = _selectedGroups
-                      .map((group) => group['id'])
+                      .map((group) => group.id)
                       .join(',');
-
-                  // groupsService.updateGroupUser(
-                  //   widget.selectedGroup.id,
-                  //   widget.selectedGroup.groupName,
-                  //   grpUsers,
-                  // );
+                  //TODO: 사용자의 그룹 리스트만 업데이트하는 함수 필요
+                  //TODO: 지금 그룹 업데이트 안됨
+                  friendsService.updateUsersGroup(
+                      widget.selectedFriend.id,
+                      widget.selectedFriend.friendNm,
+                      userGrps,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigoAccent.withOpacity(0.8),

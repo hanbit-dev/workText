@@ -85,11 +85,27 @@ class FriendsProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       _error = null;
-      notifyListeners();
 
       await _apiService.put('/friend/update',
           body: {'id': id, 'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
       await fetch();
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  Future<void> updateUsersGroup(int id, String name, String userGrps) async {
+    try {
+      _isLoading = true;
+      _error = null;
+
+      await _apiService.put('/friend/groupUpdate',
+          body: {'id': id, 'friend_nm': name, 'grp_id_list': userGrps});
+      await fetch();
+      notifyListeners();
     } catch (e) {
       _error = e.toString();
     } finally {

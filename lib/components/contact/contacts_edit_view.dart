@@ -36,6 +36,7 @@ class _ContactsEditViewState extends State<ContactsEditView> {
   @override
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
+    final isUpdating = friendsService.isLoading;
 
     return Container(
       width: 700,
@@ -187,14 +188,33 @@ class _ContactsEditViewState extends State<ContactsEditView> {
                           children: [
                             const Spacer(),
                             ElevatedButton(
-                              onPressed: () => {
-                                friendsService.update(
+                              onPressed: isUpdating
+                                  ? null
+                                  : () async {
+                                await friendsService.update(
                                     widget.selectedFriend?.id ?? 0,
                                     _updateNameController.text,
                                     _updateHonor ? "y" : "n",
-                                    _updatePositionController.text)
+                                    _updatePositionController.text);
+                                Navigator.pop(context);
                               },
-                              child: const Text("수정"),
+                              child: isUpdating
+                                ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                              : const Text("수정"),
+                            ),
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                              onPressed: () => {
+                                Navigator.pop(context)
+                              },
+                              child: const Text("닫기"),
                             ),
                           ],
                         )
