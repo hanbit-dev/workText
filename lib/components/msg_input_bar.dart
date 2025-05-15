@@ -69,15 +69,23 @@ class _MsgInputBarState extends State<MsgInputBar> {
             child: Row(
               children: [
                 const Spacer(),
-                CircleAvatar(
-                  backgroundColor: Colors.indigoAccent.withOpacity(0.8),
-                  radius: 20,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_upward, color: Colors.white),
-                    onPressed: widget.onSendMessage,
-                    iconSize: 20,
+                ElevatedButton(
+                  onPressed: widget.onSendMessage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
+                  child: const Text(
+                    '메시지 생성하기',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
               ],
             ),
           ),

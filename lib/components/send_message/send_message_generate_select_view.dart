@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:worktext/components/color_chip.dart';
 import 'package:worktext/models/friend.dart';
 import 'package:worktext/services/friend_service.dart';
-import 'package:worktext/components/color_chip.dart';
 
-class SendMessageSelectView extends StatefulWidget {
+class SendMessageGenerateSelectView extends StatefulWidget {
   final Function(List<Friend>)? onFriendsSelected;
 
-  const SendMessageSelectView({
+  const SendMessageGenerateSelectView({
     super.key,
     this.onFriendsSelected,
   });
 
   @override
-  State<SendMessageSelectView> createState() => _SendMessageSelectViewState();
+  State<SendMessageGenerateSelectView> createState() =>
+      _SendMessageGenerateSelectViewState();
 }
 
-class _SendMessageSelectViewState extends State<SendMessageSelectView> {
+class _SendMessageGenerateSelectViewState
+    extends State<SendMessageGenerateSelectView> {
   List<Friend> selectedContactsToAdd = [];
   List<Friend> selectedContactsToRemove = [];
   List<Friend> addedFriends = [];
@@ -37,7 +39,6 @@ class _SendMessageSelectViewState extends State<SendMessageSelectView> {
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final friends = friendsService.friends;
-
     void selectAllContacts() {
       setState(() {
         if (selectedContactsToAdd.length == (friends?.length ?? 0)) {

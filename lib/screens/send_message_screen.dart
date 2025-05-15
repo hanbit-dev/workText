@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/components/msg_input_bar.dart';
-import 'package:worktext/components/send_message/send_message_select_view.dart';
+import 'package:worktext/components/send_message/send_message_custom_input_view.dart';
+import 'package:worktext/components/send_message/send_message_custom_select_view.dart';
+import 'package:worktext/components/send_message/send_message_generate_select_view.dart';
 import 'package:worktext/models/friend.dart';
+import 'package:worktext/models/message.dart';
 import 'package:worktext/services/message_service.dart';
 
 class SendMessageScreen extends StatefulWidget {
@@ -38,6 +41,9 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
       await Provider.of<MessageService>(context, listen: false)
           .generateMessage(_messageController.text, friendIds);
 
+      await Provider.of<MessageService>(context, listen: false)
+          .setFriends(selectedFriends);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('메시지가 생성되었습니다')),
       );
@@ -49,6 +55,9 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
   }
 
   Widget createMessageView() {
+    final selectedFriend =
+        Provider.of<MessageService>(context, listen: true).selectedFriend;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -110,6 +119,16 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
               onSendMessage: _sendMessage,
             ),
           ),
+          selectedFriend != null
+              ? const SizedBox(height: 20)
+              : const SizedBox.shrink(),
+          selectedFriend != null
+              ? Expanded(
+                  child: SendMessageCustomInputView(
+                    selectedFriend: selectedFriend,
+                  ),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );
@@ -117,6 +136,9 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Message> generatedMessages =
+        Provider.of<MessageService>(context, listen: true).messages;
+
     return Row(
       children: [
         Expanded(
@@ -125,13 +147,15 @@ class _SendMessageScreenState extends State<SendMessageScreen> {
         ),
         Expanded(
           flex: 1,
-          child: SendMessageSelectView(
-            onFriendsSelected: (friends) {
-              setState(() {
-                selectedFriends = friends;
-              });
-            },
-          ),
+          child: generatedMessages.isEmpty
+              ? SendMessageGenerateSelectView(
+                  onFriendsSelected: (friends) {
+                    setState(() {
+                      selectedFriends = friends;
+                    });
+                  },
+                )
+              : const SendMessageCustomSelectView(),
         ),
       ],
     );
