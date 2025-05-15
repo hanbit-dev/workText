@@ -18,6 +18,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
   String? _selectedGroupName = "그룹";
   List<String>? _groupNames = [];
   var _selectedContacts = [];
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -145,7 +147,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
-  Widget contactView(friends, groups) {
+  Widget contactView(List<Friend>? friends, groups) {
+    final filteredFriends =
+        friends?.where((friend)
+            => friend.friendNm.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -174,6 +180,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
               SizedBox(width: 8),
               Expanded(
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: "검색어를 입력해 주세요",
                     hintStyle: TextStyle(color: Colors.grey),
@@ -216,10 +228,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
           ),
           SizedBox(height: 16),
           Expanded(
-            child: friends != null && friends.length > 0 ? ListView.builder(
-              itemCount: friends.length,
+            child: filteredFriends != null && filteredFriends.isNotEmpty ? ListView.builder(
+              itemCount: filteredFriends.length,
               itemBuilder: (context, index) {
-                final friend = friends[index];
+                final friend = filteredFriends[index];
                 return Card(
                   color: Colors.grey[50],
                   elevation: 2,
@@ -248,7 +260,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             Text(friend.friendNm, style: TextStyle(fontWeight: FontWeight.bold)),
                             const SizedBox(width: 10),
                             if (friend.grpNmColor != null)
-                            ...friend.grpNmColor.split(',').map<Widget>((grp) {
+                            ...?friend.grpNmColor?.split(',').map<Widget>((grp) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 4.0),
                                 child: Chip(

@@ -14,6 +14,16 @@ class ContactsGroupView extends StatefulWidget {
 
 class _ContactsGroupViewState extends State<ContactsGroupView> {
   List<dynamic> _selectedGroups = [];
+  String _searchQuery = '';
+  List<dynamic> getFilteredGroups(List<dynamic>? groups) {
+    if (groups == null) return [];
+    if (_searchQuery.isEmpty) return groups;
+    return groups
+        .where((group) => group.groupName
+        .toLowerCase()
+        .contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
 
   @override
   void initState() {
@@ -41,10 +51,9 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
 
   @override
   Widget build(BuildContext context) {
-    final friendsService = Provider.of<FriendsProvider>(context, listen: true);
-    final friends = friendsService.friends;
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final groups = groupsService.groups;
+    final filteredGroups = getFilteredGroups(groups);
     final isUpdating = groupsService.isUpdatingGroupUsers;
 
     return Column(
@@ -58,7 +67,7 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
         TextField(
           onChanged: (value) {
             setState(() {
-              // searchQuery = value;
+              _searchQuery = value;
             });
           },
           decoration: InputDecoration(
@@ -76,10 +85,10 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
         ),
         const SizedBox(height: 20),
         Expanded(
-          child: groups != null && groups.isNotEmpty ? ListView.builder(
-            itemCount: groups.length,
+          child: filteredGroups.isNotEmpty ? ListView.builder(
+            itemCount: filteredGroups.length,
             itemBuilder: (context, index) {
-              final group = groups[index];
+              final group = filteredGroups[index];
               return Card(
                 color: Colors.grey[50],
                 elevation: 2,
@@ -138,13 +147,12 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
             children: [
               Row(
                 children: [
-                  if (groups != null)
                   Checkbox(
-                    value: groups.isNotEmpty && _selectedGroups.length == groups.length,
+                    value: filteredGroups.isNotEmpty && _selectedGroups.length == filteredGroups.length,
                     onChanged: (bool? value) {
                       setState(() {
                         if (value == true) {
-                          _selectedGroups = List.from(groups);
+                          _selectedGroups = List.from(filteredGroups);
                         } else {
                           _selectedGroups.clear();
                         }
