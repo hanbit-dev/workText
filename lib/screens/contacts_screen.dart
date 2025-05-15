@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:worktext/components/contact/contacts_add_view.dart';
 import 'package:worktext/components/contact/contacts_detail_view.dart';
 import 'package:worktext/services/friend_service.dart';
+import 'package:worktext/services/group_service.dart';
 import '../models/friend.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -14,14 +15,25 @@ class ContactsScreen extends StatefulWidget {
 
 class _ContactsScreenState extends State<ContactsScreen> {
   Friend? _selectedFriend;
+  String? _selectedGroupName = "그룹";
+  List<String>? _groupNames = [];
   var _selectedContacts = [];
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => context.read<FriendsProvider>().fetch(),
-    );
+    if (!mounted) return;
+    Future.microtask(() async {
+      await context.read<FriendsProvider>().fetch();
+      final groupProvider = context.read<GroupsProvider>();
+      await groupProvider.fetch();
+
+      if (!mounted) return;
+      setState(() {
+        _groupNames = groupProvider.groups?.map((group) => group.groupName ?? '').toList();
+        _selectedGroupName = (_groupNames ?? []).isNotEmpty ? (_groupNames ?? []).first : null;
+      });
+    });
   }
 
   //연락처 추가 다이얼로그
@@ -133,7 +145,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
-  Widget contactView(friends) {
+  Widget contactView(friends, groups) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -146,14 +158,18 @@ class _ContactsScreenState extends State<ContactsScreen> {
           Row(
             children: [
               DropdownButton<String>(
-                value: "전체",
-                items: ["전체", "교회", "회사"].map((String value) {
+                value: _selectedGroupName,
+                items: _groupNames == null ? [] : _groupNames?.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
                   );
                 }).toList(),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGroupName = value;
+                  });
+                },
               ),
               SizedBox(width: 8),
               Expanded(
@@ -243,21 +259,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             }).toList(),
                           ],
                         ),
-                    // subtitle: Row(
-                      // children: friend["tags"].map<Widget>((tag) {
-                      //   return Padding(
-                      //     padding: const EdgeInsets.only(right: 4.0),
-                      //     child: Chip(
-                      //       label: Text(tag, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      //       backgroundColor: tag == "교회"
-                      //           ? Colors.red[100]
-                      //           : tag == "1청"
-                      //           ? Colors.blue[100]
-                      //           : Colors.grey[400],
-                      //     ),
-                      //   );
-                      // }).toList(),
-                    // ),
                     trailing:
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -320,6 +321,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Widget build(BuildContext context) {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final friends = friendsService.friends;
+    final groupService = Provider.of<GroupsProvider>(context, listen: true);
+    final groups = groupService.groups;
 
     // selectedContact 업데이트
     if (_selectedFriend != null && friends != null) {
@@ -333,7 +336,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       children: [
         Expanded(
           flex: 4,
-          child: contactView(friends)
+          child: contactView(friends, groups)
         ),
         Expanded(
           flex: 3,

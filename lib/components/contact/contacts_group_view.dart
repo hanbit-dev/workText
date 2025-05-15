@@ -22,14 +22,21 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
   }
 
   void _loadGroups() {
-    // 데이터가 이미 있는 경우에만 fetch 호출
-    if (context
-        .read<GroupsProvider>()
-        .groups == null) {
-      Future.microtask(
-            () => context.read<GroupsProvider>().fetch(),
-      );
+    if (!mounted) return;
+    Future.microtask(() async {
+      final groupProvider = context.read<GroupsProvider>();
+      final friendsProvider = context.read<FriendsProvider>();
+      await groupProvider.fetch();
+
+      if (!mounted) return;
+      setState(() {
+        _selectedGroups = (groupProvider.groups ?? [])
+            .where((group) => friendsProvider.friendDetails?.grpNm != null &&
+            group.groupName == friendsProvider.friendDetails!.grpNm?.split('/').first.trim())
+            .toList();
+      });
     }
+    );
   }
 
   @override
@@ -38,6 +45,7 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
     final friends = friendsService.friends;
     final groupsService = Provider.of<GroupsProvider>(context, listen: true);
     final groups = groupsService.groups;
+    final isUpdating = groupsService.isUpdatingGroupUsers;
 
     return Column(
       children: [
@@ -148,9 +156,9 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: (isUpdating) ? null : () {
                   final userGrps = _selectedGroups
-                      .map((friend) => friend['friend_id'])
+                      .map((group) => group['id'])
                       .join(',');
 
                   // groupsService.updateGroupUser(
@@ -166,7 +174,16 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
                     vertical: 12,
                   ),
                 ),
-                child: const Text(
+                child: isUpdating
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                    : const Text(
                   '수정하기',
                   style: TextStyle(color: Colors.white),
                 ),
