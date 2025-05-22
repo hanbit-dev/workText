@@ -39,6 +39,7 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
     final friendsService = Provider.of<FriendsProvider>(context, listen: true);
     final friend = widget.selectedFriend;
     final friendDetails = friendsService.friendDetails;
+    final isLoading = friendsService.isLoading;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height - 32,

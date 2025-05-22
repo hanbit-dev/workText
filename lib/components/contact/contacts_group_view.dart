@@ -36,13 +36,17 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
     Future.microtask(() async {
       final groupProvider = context.read<GroupsProvider>();
       final friendsProvider = context.read<FriendsProvider>();
+      await friendsProvider.fetchFriendGroup(friendsProvider.friendDetails?.id ?? 0);
       await groupProvider.fetch();
-
+      
       if (!mounted) return;
       setState(() {
+        final checkedGroupNames = (friendsProvider.friendGroups ?? [])
+                .where((group) => group.groupUserID != null)
+                .toList().map((item) => item.groupName).toList();
+
         _selectedGroups = (groupProvider.groups ?? [])
-            .where((group) => friendsProvider.friendDetails?.grpNm != null &&
-            group.groupName == friendsProvider.friendDetails!.grpNm?.split('/').first.trim())
+            .where((group) => checkedGroupNames.contains(group.groupName))
             .toList();
       });
     }
@@ -169,11 +173,9 @@ class _ContactsGroupViewState extends State<ContactsGroupView> {
                   final userGrps = _selectedGroups
                       .map((group) => group.id)
                       .join(',');
-                  //TODO: 사용자의 그룹 리스트만 업데이트하는 함수 필요
-                  //TODO: 지금 그룹 업데이트 안됨
+                  print(userGrps);
                   friendsService.updateUsersGroup(
                       widget.selectedFriend.id,
-                      widget.selectedFriend.friendNm,
                       userGrps,
                   );
                 },

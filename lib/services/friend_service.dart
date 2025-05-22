@@ -4,19 +4,22 @@ import 'package:flutter/foundation.dart';
 import 'package:worktext/models/friend.dart';
 import 'package:worktext/services/api_service.dart';
 
+import '../models/friendGroup.dart';
+
 class FriendsProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
   List<Friend>? _friends;
+  List<FriendGroup>? _friendsGroups;
+  Friend? _friendDetails;
   bool _isLoading = false;
   String? _error;
 
   List<Friend>? get friends => _friends;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  Friend? _friendDetails;
   Friend? get friendDetails => _friendDetails;
+  List<FriendGroup>? get friendGroups => _friendsGroups;
 
   Future<void> fetch() async {
     try {
@@ -56,7 +59,26 @@ class FriendsProvider extends ChangeNotifier {
       print(response['data']);
       _friendDetails = Friend.fromJson(response['data']);
       print(_friendDetails);
-      // return friend;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchFriendGroup(int friendId) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _apiService
+          .post('/friend/group-list-select', body: {'id': friendId});
+
+      _friendsGroups = (response['data'] as List)
+          .map((json) => FriendGroup.fromJson(json))
+          .toList();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -78,6 +100,8 @@ class FriendsProvider extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _isLoading = false;
+      notifyListeners();
+
     }
   }
 
@@ -85,31 +109,34 @@ class FriendsProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       _error = null;
+      notifyListeners();
 
       await _apiService.put('/friend/update',
           body: {'id': id, 'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
       await fetch();
-      notifyListeners();
     } catch (e) {
       _error = e.toString();
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 
-  Future<void> updateUsersGroup(int id, String name, String userGrps) async {
+  Future<void> updateUsersGroup(int id, String userGrps) async {
     try {
       _isLoading = true;
       _error = null;
+      notifyListeners();
 
       await _apiService.put('/friend/groupUpdate',
-          body: {'id': id, 'friend_nm': name, 'grp_id_list': userGrps});
+          body: {'id': id, 'grp_id_list': userGrps});
+
       await fetch();
-      notifyListeners();
     } catch (e) {
       _error = e.toString();
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -125,6 +152,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 }
