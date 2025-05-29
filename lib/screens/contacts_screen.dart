@@ -15,25 +15,28 @@ class ContactsScreen extends StatefulWidget {
 
 class _ContactsScreenState extends State<ContactsScreen> {
   Friend? _selectedFriend;
-  String? _selectedGroupName = "그룹";
+  String? _selectedGroupName = "전체";
   List<String>? _groupNames = [];
   var _selectedContacts = [];
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
+  List<Friend>? _filteredFriends;
 
   @override
   void initState() {
     super.initState();
     if (!mounted) return;
     Future.microtask(() async {
-      await context.read<FriendsProvider>().fetch();
+      final friendProvider = context.read<FriendsProvider>();
       final groupProvider = context.read<GroupsProvider>();
+      await friendProvider.fetch();
       await groupProvider.fetch();
 
       if (!mounted) return;
       setState(() {
-        _groupNames = groupProvider.groups?.map((group) => group.groupName ?? '').toList();
-        _selectedGroupName = (_groupNames ?? []).isNotEmpty ? (_groupNames ?? []).first : null;
+        _groupNames = ['전체', ...?groupProvider.groups?.map((group) => group.groupName ?? '').toList()];
+        _selectedGroupName = '전체';
+        _applyFilters(friendProvider.friends);
       });
     });
   }
@@ -147,11 +150,20 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
-  Widget contactView(List<Friend>? friends, groups) {
-    final filteredFriends =
-        friends?.where((friend)
-            => friend.friendNm.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+  void _applyFilters(List<Friend>? friends) {
+    setState(() {
+      _filteredFriends = (friends ?? []).where((friend) {
+        final matchesName = friend.friendNm.toLowerCase().contains(_searchQuery.toLowerCase());
+        final matchesGroup = _selectedGroupName == null || _selectedGroupName == '전체'
+            ? true
+            : (friend.grpNmColor ?? "").split(',').any((grp) =>
+        _selectedGroupName == grp.split('/').first.trim());
+        return matchesName && matchesGroup;
+      }).toList();
+    });
+  }
 
+  Widget contactView(List<Friend>? friends, groups) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -174,6 +186,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 onChanged: (value) {
                   setState(() {
                     _selectedGroupName = value;
+                    _applyFilters(friends);
                   });
                 },
               ),
@@ -184,6 +197,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value;
+                      _applyFilters(friends);
                     });
                   },
                   decoration: InputDecoration(
@@ -228,10 +242,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
           ),
           SizedBox(height: 16),
           Expanded(
-            child: filteredFriends != null && filteredFriends.isNotEmpty ? ListView.builder(
-              itemCount: filteredFriends.length,
+            child: _filteredFriends != null && _filteredFriends!.isNotEmpty ? ListView.builder(
+              itemCount: _filteredFriends!.length,
               itemBuilder: (context, index) {
-                final friend = filteredFriends[index];
+                final friend = _filteredFriends![index];
                 return Card(
                   color: Colors.grey[50],
                   elevation: 2,
