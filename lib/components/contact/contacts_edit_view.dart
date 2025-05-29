@@ -197,6 +197,7 @@ class _ContactsEditViewState extends State<ContactsEditView> {
                                     _updateHonor ? "y" : "n",
                                     _updatePositionController.text);
                                 Navigator.pop(context);
+                                await friendsService.fetchDetail(widget.selectedFriend?.id ?? 0);
                               },
                               child: isUpdating
                                 ? const SizedBox(
@@ -211,10 +212,19 @@ class _ContactsEditViewState extends State<ContactsEditView> {
                             ),
                             const SizedBox(width: 10),
                             ElevatedButton(
-                              onPressed: () => {
+                              onPressed: isUpdating
+                                ? null : () => {
                                 Navigator.pop(context)
                               },
-                              child: const Text("닫기"),
+                              child: isUpdating
+                                ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              ) : const Text("닫기"),
                             ),
                           ],
                         )

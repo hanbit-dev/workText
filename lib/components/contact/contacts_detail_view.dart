@@ -19,8 +19,10 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-        () => context.read<FriendsProvider>().fetchDetail(widget.selectedFriend.id),
+    Future.microtask(() {
+      if (!mounted) return;
+        context.read<FriendsProvider>().fetchDetail(widget.selectedFriend.id);
+      },
     );
   }
 
@@ -29,6 +31,7 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedFriend.id != widget.selectedFriend.id) {
       Future.microtask(() {
+        if (!mounted) return;
         context.read<FriendsProvider>().fetchDetail(widget.selectedFriend.id);
       });
     }
@@ -77,7 +80,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Text(
-                                  friendDetails?.friendNm ?? "",
+                                  isLoading
+                                  ? "로딩중..."
+                                   : friendDetails?.friendNm ?? "",
                                 ),
                               ],
                             ),
@@ -95,17 +100,19 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                         ))),
                                 Row(
                                   children: [
-                                    if (friend.grpNmColor == null)
-                                      Text("소속 그룹 없음"),
-                                    if (friend.grpNmColor != null)
-                                    ...(friend.grpNmColor?.split(',') ?? []).map<Widget>((grp) {
+                                    if (isLoading)
+                                      const Text("로딩중...")
+                                    else if (friend.grpNmColor == null)
+                                      const Text("소속 그룹 없음")
+                                    else if (friend.grpNmColor != null)
+                                      ...(friend.grpNmColor?.split(',') ?? []).map<Widget>((grp) {
                                       return Padding(
-                                        padding: const EdgeInsets.only(right: 4.0),
-                                        child: Chip(
-                                          label: Text(grp.split('/').first.trim(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                                          backgroundColor: Color(int.parse(grp.split('/').last.trim())),
-                                        ),
-                                      );
+                                          padding: const EdgeInsets.only(right: 4.0),
+                                          child: Chip(
+                                            label: Text(grp.split('/').first.trim(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                            backgroundColor: Color(int.parse(grp.split('/').last.trim())),
+                                          ),
+                                        );
                                     }).toList(),
                                   ],
                                 ),
@@ -138,7 +145,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Text(
-                                  friendDetails?.friendPosition ?? "",
+                                  isLoading
+                                  ? "로딩중..."
+                                  : friendDetails?.friendPosition ?? "",
                                 ),
                               ],
                             ),
@@ -155,7 +164,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                             fontWeight: FontWeight.bold
                                         ))),
                                 Text(
-                                    friendDetails?.friendHonor == "y"
+                                  isLoading
+                                    ? "로딩중..."
+                                    : friendDetails?.friendHonor == "y"
                                         ? "존댓말 사용"
                                         : "존댓말 사용 안함"
                                 ),
@@ -169,7 +180,9 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                 const Spacer(),
                                 ElevatedButton(
                                   onPressed: () => {
-                                    showGeneralDialog(
+                                    isLoading
+                                    ? null
+                                    : showGeneralDialog(
                                       context: context,
                                       barrierDismissible: true,
                                       barrierLabel: "그룹 수정",
@@ -185,7 +198,15 @@ class _ContactsDetailViewState extends State<ContactsDetailView> {
                                       },
                                     )
                                   },
-                                  child: const Text("수정"),
+                                  child: isLoading
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ) : const Text("수정"),
                                 ),
                               ],
                             )

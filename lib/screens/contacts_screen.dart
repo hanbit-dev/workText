@@ -310,17 +310,17 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     });
                   },
                 ),
-                Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
-                Spacer(),
-                IconButton(
-                  icon: Icon(Icons.arrow_left),
-                  onPressed: () {},
-                ),
-                Text("1", style: TextStyle(fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: Icon(Icons.arrow_right),
-                  onPressed: () {},
-                ),
+                const Text("전체 선택", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                // IconButton(
+                //   icon: Icon(Icons.arrow_left),
+                //   onPressed: () {},
+                // ),
+                // Text("1", style: TextStyle(fontWeight: FontWeight.bold)),
+                // IconButton(
+                //   icon: Icon(Icons.arrow_right),
+                //   onPressed: () {},
+                // ),
               ],
             ),
           ),
