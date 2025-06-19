@@ -10,6 +10,8 @@ class UserService extends ChangeNotifier {
 
   User? _firebaseUser;
   Map<String, dynamic>? _user;
+  bool _isLoading = false;
+  String? _error;
   final _initializedCompleter = Completer<void>();
 
   UserService(this._authRepository) {
@@ -38,12 +40,44 @@ class UserService extends ChangeNotifier {
   bool get isLoggedIn => _firebaseUser != null;
   User? get firebaseUser => _firebaseUser;
   Map<String, dynamic>? get user => _user;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
 
   Stream<User?> authStateChanges() => _auth.authStateChanges();
 
   Future<void> saveUserInfo(Map<String, dynamic> userInfo) async {
     _user = userInfo;
     notifyListeners();
+  }
+
+  // 사용자 정보 업데이트 메서드 (추상화)
+  Future<void> updateUserInfo(String birthDay, String gender) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      await _authRepository.updateUserInfo({
+        'birth_day': birthDay,
+        'gender': gender,
+      });
+
+      // 임시로 로컬 데이터 업데이트
+      if (_user != null) {
+        _user!['birth_day'] = birthDay;
+        _user!['gender'] = gender;
+      }
+
+      print('사용자 정보 업데이트 완료:');
+      print('생년월일: $birthDay');
+      print('성별: $gender');
+    } catch (e) {
+      _error = e.toString();
+      print('사용자 정보 업데이트 실패: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> logout() async {

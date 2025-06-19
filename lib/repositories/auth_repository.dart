@@ -49,6 +49,15 @@ class AuthRepository {
     }
   }
 
+  Future<void> updateUserInfo(Map<String, dynamic> userInfo) async {
+    try {
+      await _apiService.put('/user/update', body: userInfo);
+    } catch (e) {
+      print('사용자 정보 업데이트 실패: $e');
+      throw Exception('사용자 정보 업데이트 실패: $e');
+    }
+  }
+
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }

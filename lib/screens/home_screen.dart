@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/services/user_service.dart';
+import 'package:worktext/components/user/user_edit_view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,6 +9,19 @@ class HomeScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
     final userService = Provider.of<UserService>(context, listen: false);
     await userService.logout();
+  }
+
+  void _showProfileEditDialog(BuildContext context) {
+    final userService = Provider.of<UserService>(context, listen: false);
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: UserEditView(selectedUser: userService.user),
+        );
+      },
+    );
   }
 
   @override
@@ -43,6 +57,25 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ]),
+          const SizedBox(height: 30),
+          ElevatedButton.icon(
+            onPressed: () => _showProfileEditDialog(context),
+            icon: const Icon(Icons.edit, color: Colors.white),
+            label: const Text(
+              '프로필 수정하기',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.indigoAccent.withOpacity(0.8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
         ],
       ),
     );
