@@ -20,7 +20,7 @@ class SidebarLayout extends StatelessWidget {
       AppRoute.messageHistory,
       AppRoute.contacts,
       AppRoute.groups,
-      AppRoute.settings,
+      // AppRoute.settings,
       AppRoute.notice,
       AppRoute.logout,
     ];
