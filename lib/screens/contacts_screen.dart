@@ -164,6 +164,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
   }
 
   Widget contactView(List<Friend>? friends, groups) {
+    final friendsService = Provider.of<FriendsProvider>(context, listen: true);
+    final isUpdating = friendsService.listLoading;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -242,7 +245,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
           ),
           SizedBox(height: 16),
           Expanded(
-            child: _filteredFriends != null && _filteredFriends!.isNotEmpty ? ListView.builder(
+            child: isUpdating || isUpdating && _filteredFriends == null ? Text("로딩중...") : _filteredFriends != null && _filteredFriends!.isNotEmpty ? ListView.builder(
               itemCount: _filteredFriends!.length,
               itemBuilder: (context, index) {
                 final friend = _filteredFriends![index];

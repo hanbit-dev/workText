@@ -13,17 +13,19 @@ class FriendsProvider extends ChangeNotifier {
   List<FriendGroup>? _friendsGroups;
   Friend? _friendDetails;
   bool _isLoading = false;
+  bool _listLoading = false;
   String? _error;
 
   List<Friend>? get friends => _friends;
   bool get isLoading => _isLoading;
+  bool get listLoading => _listLoading;
   String? get error => _error;
   Friend? get friendDetails => _friendDetails;
   List<FriendGroup>? get friendGroups => _friendsGroups;
 
   Future<void> fetch() async {
     try {
-      _isLoading = true;
+      _listLoading = true;
       _error = null;
       notifyListeners();
 
@@ -34,7 +36,7 @@ class FriendsProvider extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
     } finally {
-      _isLoading = false;
+      _listLoading = false;
       notifyListeners();
     }
   }

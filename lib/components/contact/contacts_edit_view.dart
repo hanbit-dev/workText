@@ -40,7 +40,7 @@ class _ContactsEditViewState extends State<ContactsEditView> {
 
     return Container(
       width: 700,
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.5,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
