@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:provider/provider.dart';
 import 'package:worktext/repositories/auth_repository.dart';
@@ -13,9 +12,6 @@ import 'services/user_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // .env 파일 로드
-  await dotenv.load(fileName: ".env");
 
   KakaoSdk.init(
     javaScriptAppKey: 'b1001684bdd64f2d78d869fa512d7977',
