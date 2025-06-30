@@ -29,7 +29,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final response = await _apiService.post('/friend/list-select');
+      final response = await _apiService.post('friend/list-select');
       _friends = (response['data'] as List)
           .map((json) => Friend.fromJson(json))
           .toList();
@@ -56,7 +56,7 @@ class FriendsProvider extends ChangeNotifier {
       notifyListeners();
 
       final response = await _apiService
-          .post('/friend/detail-select', body: {'id': friendId});
+          .post('friend/detail-select', body: {'id': friendId});
       print("step1");
       print(response['data']);
       _friendDetails = Friend.fromJson(response['data']);
@@ -76,7 +76,7 @@ class FriendsProvider extends ChangeNotifier {
       notifyListeners();
 
       final response = await _apiService
-          .post('/friend/group-list-select', body: {'id': friendId});
+          .post('friend/group-list-select', body: {'id': friendId});
 
       _friendsGroups = (response['data'] as List)
           .map((json) => FriendGroup.fromJson(json))
@@ -95,7 +95,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/friend/insert',
+      await _apiService.put('friend/insert',
           body: {'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
       await fetch();
     } catch (e) {
@@ -113,7 +113,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/friend/update',
+      await _apiService.put('friend/update',
           body: {'id': id, 'friend_nm': name, 'honorifics_yn': honor, 'friend_position': position});
       await fetch();
     } catch (e) {
@@ -130,7 +130,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/friend/groupUpdate',
+      await _apiService.put('friend/groupUpdate',
           body: {'id': id, 'grp_id_list': userGrps});
 
       await fetch();
@@ -148,7 +148,7 @@ class FriendsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.post('/friend/friend-delete', body: {'id': id});
+      await _apiService.post('friend/friend-delete', body: {'id': id});
       await fetch();
     } catch (e) {
       _error = e.toString();

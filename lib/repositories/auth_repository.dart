@@ -12,7 +12,7 @@ class AuthRepository {
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
 
       // 2. 백엔드에서 커스텀 토큰 받아오기
-      final response = await _apiService.post('/auth/login-with-kakao', body: {
+      final response = await _apiService.post('auth/login-with-kakao', body: {
         'accessToken': token.accessToken,
       });
 
@@ -39,7 +39,7 @@ class AuthRepository {
       }
 
       final response = await _apiService.get(
-        '/user/me',
+        'user/me',
       );
 
       return response['user'];
@@ -51,7 +51,7 @@ class AuthRepository {
 
   Future<void> updateUserInfo(Map<String, dynamic> userInfo) async {
     try {
-      await _apiService.put('/user/update', body: userInfo);
+      await _apiService.put('user/update', body: userInfo);
     } catch (e) {
       print('사용자 정보 업데이트 실패: $e');
       throw Exception('사용자 정보 업데이트 실패: $e');

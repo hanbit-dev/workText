@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://127.0.0.1:5001/hanbit-work-text/asia-northeast3/api',
+    defaultValue: 'http://127.0.0.1:5001/hanbit-work-text/asia-northeast3/api/',
   );
 
   final FirebaseAuth _auth = FirebaseAuth.instance;

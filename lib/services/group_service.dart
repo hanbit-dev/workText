@@ -43,7 +43,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final response = await _apiService.post('/group/list-select');
+      final response = await _apiService.post('group/list-select');
       _groups = (response['data'] as List)
           .map((json) => Group.fromJson(json))
           .toList();
@@ -61,7 +61,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/group/insert', body: {
+      await _apiService.put('group/insert', body: {
         'grp_nm': name,
         'grp_color': color,
       });
@@ -81,7 +81,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/group/update', body: {
+      await _apiService.put('group/update', body: {
         'id': id,
         'grp_nm': name,
         'grp_color': color,
@@ -102,7 +102,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.post('/group/group-delete', body: {
+      await _apiService.post('group/group-delete', body: {
         'id': id,
       });
 
@@ -121,7 +121,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final response = await _apiService.post('/group/user-list-select', body: {
+      final response = await _apiService.post('group/user-list-select', body: {
         'id': id,
       });
 
@@ -140,7 +140,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      final response = await _apiService.post('/group/detail-select', body: {
+      final response = await _apiService.post('group/detail-select', body: {
         'id': id,
       });
 
@@ -161,7 +161,7 @@ class GroupsProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _apiService.put('/group/user-update', body: {
+      await _apiService.put('group/user-update', body: {
         'id': id,
         'grp_nm': grpNm,
         'grp_users': grpUsers,

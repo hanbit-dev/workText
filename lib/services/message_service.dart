@@ -29,7 +29,7 @@ class MessageService extends ChangeNotifier {
   }
 
   Future<void> generateMessage(String message, List<String> friendIds) async {
-    final response = await _apiService.post('/message/generate-message', body: {
+    final response = await _apiService.post('message/generate-message', body: {
       'message': message,
       'friendIds': friendIds,
     });
