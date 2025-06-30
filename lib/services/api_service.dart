@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl =
+  static String get baseUrl =>
+      dotenv.env['API_BASE_URL'] ??
       'http://127.0.0.1:5001/hanbit-work-text/asia-northeast3/api';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;

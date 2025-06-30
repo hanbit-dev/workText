@@ -37,7 +37,11 @@ class NoticeScreen extends StatelessWidget {
     final notices = getNotices();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('공지사항')),
+      appBar: AppBar(
+        title: const Text('공지사항'),
+        backgroundColor: Colors.white,
+      ),
+      backgroundColor: Colors.white,
       body: ListView.builder(
         itemCount: notices.length,
         itemBuilder: (context, index) {
@@ -46,22 +50,32 @@ class NoticeScreen extends StatelessWidget {
 
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: ExpansionTile(
-              title: Text(
-                notice.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+            clipBehavior: Clip.antiAlias,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
               ),
-              subtitle: Text(
-                '${notice.date.year}.${notice.date.month.toString().padLeft(2, '0')}.${notice.date.day.toString().padLeft(2, '0')}',
-                style: const TextStyle(fontSize: 12),
-              ),
-              initiallyExpanded: isLatest,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(notice.content),
+              child: ExpansionTile(
+                title: Text(
+                  notice.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-              ],
+                subtitle: Text(
+                  '${notice.date.year}.${notice.date.month.toString().padLeft(2, '0')}.${notice.date.day.toString().padLeft(2, '0')}',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                initiallyExpanded: isLatest,
+                shape: const Border(),
+                collapsedShape: const Border(),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(notice.content),
+                  ),
+                ],
+              ),
             ),
           );
         },
